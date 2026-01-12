@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title><%= SITE_TITLE %> - <%= PAGE_NAME %></title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <%- include('partials/head.ejs') %>
+
+</head>
+
+<body>
+
+  <div class="site-wrap">
+    
+    <%- include('partials/navbar.ejs') %>
+
+    <%- include('partials/mini_navbar.ejs') %>
+    
+    <div class="site-section">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 text-center">
+            <!-- <span class="icon-warning_circle display-3 text-primary"></span> -->
+            <span class="icon-warning display-3 text-primary"></span>
+            <h2 class="display-3 text-black">500</h2>
+            <p class="lead mb-5">Internal Server Error!</p>
+            <p><a href="/" class="btn btn-md height-auto px-4 py-3 btn-primary">Back to Home</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <%- include('partials/footer.ejs') %>
+  </div>
+
+  <%- include('partials/scripts.ejs') %>
+
+</body>
+
+</html>
