@@ -6,6 +6,39 @@ const renderPage = (view, pageName, statusCode) =>
   {
     try 
     {
+      if (req.path === '/shop') 
+      {
+        const allowedProducts = 
+        [
+          'orthopedic_cervical_pillow',
+          'posture_corrector_belt',
+          'lumbar_support_cushion',
+          'tharapy_massage_tool'
+        ];
+
+        const queryKeys = Object.keys(req.query);
+
+        if (queryKeys.length === 0) 
+        {
+          const err = new Error('Product query is required');
+          next(err);
+        }
+
+        if (queryKeys.length !== 1 || queryKeys[0] !== 'product') 
+        {
+          const err = new Error('Invalid query parameter');
+          next(err);
+        }
+
+        const product = req.query.product;
+
+        if (!allowedProducts.includes(product)) 
+        {
+          const err = new Error('Invalid product value');
+          next(err);
+        }
+      }
+
       return res
         .status(statusCode)
         .render(`../views/${view}.ejs`, 
@@ -14,14 +47,13 @@ const renderPage = (view, pageName, statusCode) =>
           PAGE_NAME: pageName
         });
     } 
-    
     catch (e) 
     {
       next(e);
     }
   };
 };
-
+      
 module.exports = 
 {
   indexController:       renderPage('index', 'Home', 200),
