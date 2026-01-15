@@ -1,0 +1,23 @@
+#cart-remove-box 
+{
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 20px;
+  border-radius: 5px;
+  font-weight: bold;
+  z-index: 9999;
+  text-align: center;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.5s;
+  min-width: 250px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+#cart-remove-box 
+{
+  background-color: #dc3545;
+  color: #fff;
+}

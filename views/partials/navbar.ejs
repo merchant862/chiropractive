@@ -1,58 +1,60 @@
 <div class="site-navbar py-2">
 
-    <!-- <div class="search-wrap">
-      <div class="container">
-        <a href="#" class="search-close js-search-close"><span class="icon-close2"></span></a>
-        <form action="#" method="post">
-          <input type="text" class="form-control" placeholder="Search keyword and hit enter...">
-        </form>
+  <div class="container">
+    <div class="d-flex align-items-center justify-content-between">
+      
+      <div class="logo">
+        <div class="site-logo">
+          <a href="/" class="js-logo-clone"><strong class="text-primary">Chiroprac</strong>tive</a>
+        </div>
       </div>
-    </div> -->
 
-    <div class="container">
-      <div class="d-flex align-items-center justify-content-between">
-        <div class="logo">
-          <div class="site-logo">
-            <a href="/" class="js-logo-clone"><strong class="text-primary">Chiroprac</strong>tive</a>
-          </div>
-        </div>
-        <div class="main-nav d-none d-lg-block">
-          <nav class="site-navigation text-right text-md-center" role="navigation">
-            <ul class="site-menu js-clone-nav d-none d-lg-block">
-              <li><a href="/">Home</a></li>
-              <li><a href="/store">Store</a></li>
-              <!-- <li class="has-children">
-                <a href="#">Products</a>
-                <ul class="dropdown">
-                  <li><a href="#">Supplements</a></li>
-                  <li class="has-children">
-                    <a href="#">Vitamins</a>
-                    <ul class="dropdown">
-                      <li><a href="#">Supplements</a></li>
-                      <li><a href="#">Vitamins</a></li>
-                      <li><a href="#">Diet &amp; Nutrition</a></li>
-                      <li><a href="#">Tea &amp; Coffee</a></li>
-                    </ul>
-                  </li>
-                  <li><a href="#">Diet &amp; Nutrition</a></li>
-                  <li><a href="#">Tea &amp; Coffee</a></li>
-                  
-                </ul>
-              </li> -->
-              <li class="active"><a href="/about">About</a></li>
-              <!-- <li><a href="/contact">Contact</a></li> -->
-            </ul>
-          </nav>
-        </div>
-        <div class="icons">
-          <!-- <a href="#" class="icons-btn d-inline-block js-search-open"><span class="icon-search"></span></a> -->
-          <a href="/cart" class="icons-btn d-inline-block bag">
-            <span class="icon-shopping-bag"></span>
-            <span class="number">2</span>
-          </a>
-          <a href="#" class="site-menu-toggle js-menu-toggle ml-3 d-inline-block d-lg-none"><span
-              class="icon-menu"></span></a>
-        </div>
+      <div class="main-nav d-none d-lg-block">
+        <nav class="site-navigation text-right text-md-center" role="navigation">
+          <ul class="site-menu js-clone-nav d-none d-lg-block">
+
+            <li class="<%= PAGE_NAME === 'Home' ? 'active' : '' %>">
+              <a href="/">Home</a>
+            </li>
+
+            <li class="has-children"><!--<%= PAGE_NAME === 'Shop' ? 'active' : '' %>-->
+              <a href="#">Shop</a>
+              <ul class="dropdown">
+                <li><a href="/shop/orthopedic_cervical_pillow">Orthopedic Cervical Pillow</a></li>
+                <li><a href="/shop/posture_corrector_belt">Posture Corrector Belt</a></li>
+                <li><a href="/shop/lumbar_support_cushion">Lumbar Support Cushion</a></li>
+                <li><a href="/shop/therapy_massage_tool">Therapy Massage Tool</a></li>
+              </ul>
+            </li>
+
+            <li class="<%= PAGE_NAME === 'About' ? 'active' : '' %>">
+              <a href="/about">About</a>
+            </li>
+
+          </ul>
+        </nav>
       </div>
+
+      <div class="icons">
+        <a href="/cart" class="icons-btn d-inline-block bag">
+          <span class="icon-shopping-bag"></span>
+          <span class="number">0</span>
+        </a>
+        <a href="#" class="site-menu-toggle js-menu-toggle ml-3 d-inline-block d-lg-none">
+          <span class="icon-menu"></span>
+        </a>
+      </div>
+
     </div>
   </div>
+</div>
+
+<script>
+  
+  document.addEventListener("DOMContentLoaded", function () 
+  {
+    const cart = JSON.parse(localStorage.getItem("cart")) || {};
+    document.querySelector(".number").innerText = Object.keys(cart).length;
+  });
+
+</script>

@@ -147,7 +147,7 @@ jQuery(document).ready(function($) {
 	siteMenuClone();
 
 
-	var sitePlusMinus = function() {
+	/* var sitePlusMinus = function() {
 		$('.js-btn-minus').on('click', function(e){
 			e.preventDefault();
 			if ( $(this).closest('.input-group').find('.form-control').val() != 0  ) {
@@ -160,9 +160,39 @@ jQuery(document).ready(function($) {
 			e.preventDefault();
 			$(this).closest('.input-group').find('.form-control').val(parseInt($(this).closest('.input-group').find('.form-control').val()) + 1);
 		});
-	};
-	sitePlusMinus();
+	}; */
+	//sitePlusMinus();
+	
+	function sitePlusMinus() {
+		
+		function safeParseInt(val, fallback = 1) {
+			const n = parseInt(val);
+			return isNaN(n) || n < 1 ? fallback : n;
+		}
 
+		const minusButtons = document.querySelectorAll('.js-btn-minus');
+		const plusButtons  = document.querySelectorAll('.js-btn-plus');
+
+		minusButtons.forEach(btn => {
+			btn.addEventListener('click', e => {
+			e.preventDefault();
+			const input = btn.closest('.input-group').querySelector('.js-quantity');
+			let val = safeParseInt(input.value);
+			if (val > 1) input.value = val - 1;
+			});
+		});
+
+		plusButtons.forEach(btn => {
+			btn.addEventListener('click', e => {
+			e.preventDefault();
+			const input = btn.closest('.input-group').querySelector('.js-quantity');
+			let val = safeParseInt(input.value);
+			input.value = val + 1;
+			});
+		});
+	}
+
+	document.addEventListener('DOMContentLoaded', sitePlusMinus);
 
 	var siteSliderRange = function() {
     $( "#slider-range" ).slider({

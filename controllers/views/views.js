@@ -1,58 +1,45 @@
 require('dotenv').config();
 
-const renderPage = (view, pageName, statusCode) => 
-{
-  return async (req, res, next) => 
+const renderPage = (view, pageName, statusCode) =>
   {
-    try 
+    return async (req, res, next) =>
     {
-      if (req.path === '/shop') 
+      try
       {
-        const allowedProducts = 
-        [
-          'orthopedic_cervical_pillow',
-          'posture_corrector_belt',
-          'lumbar_support_cushion',
-          'tharapy_massage_tool'
-        ];
-
-        const queryKeys = Object.keys(req.query);
-
-        if (queryKeys.length === 0) 
+        if (req.path.startsWith('/shop'))
         {
-          const err = new Error('Product query is required');
-          next(err);
+          const allowedProducts =
+          [
+            'orthopedic_cervical_pillow',
+            'posture_corrector_belt',
+            'lumbar_support_cushion',
+            'therapy_massage_tool'
+          ];
+  
+          const { product } = req.params;
+  
+          if (!product) return next();
+  
+          if (!allowedProducts.includes(product)) return next();
         }
-
-        if (queryKeys.length !== 1 || queryKeys[0] !== 'product') 
-        {
-          const err = new Error('Invalid query parameter');
-          next(err);
-        }
-
-        const product = req.query.product;
-
-        if (!allowedProducts.includes(product)) 
-        {
-          const err = new Error('Invalid product value');
-          next(err);
-        }
+  
+        return res
+          .status(statusCode)
+          .render(`../views/${view}.ejs`,
+          {
+            SITE_TITLE: process.env.SITE_TITLE,
+            PAGE_NAME: pageName,
+            PRODUCT: req.params.product || null
+          });
+  
       }
-
-      return res
-        .status(statusCode)
-        .render(`../views/${view}.ejs`, 
-        {
-          SITE_TITLE: process.env.SITE_TITLE,
-          PAGE_NAME: pageName
-        });
-    } 
-    catch (e) 
-    {
-      next(e);
-    }
+      catch (e)
+      {
+        next(e);
+      }
+    };
   };
-};
+  
       
 module.exports = 
 {
