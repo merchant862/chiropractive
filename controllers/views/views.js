@@ -1,5 +1,7 @@
 require('dotenv').config();
 
+const { getAllSlugs, getProductBySlug } = require("../../database/services/products");
+
 const renderPage = (view, pageName, statusCode) =>
   {
     return async (req, res, next) =>
@@ -8,13 +10,16 @@ const renderPage = (view, pageName, statusCode) =>
       {
         if (req.path.startsWith('/shop'))
         {
-          const allowedProducts =
+          const productSlugs = await getAllSlugs();
+          const allowedProducts = productSlugs.map(item => item.slug);
+
+          /* const allowedProducts =
           [
             'orthopedic_cervical_pillow',
             'posture_corrector_belt',
             'lumbar_support_cushion',
             'therapy_massage_tool'
-          ];
+          ]; */
   
           const { product } = req.params;
   
@@ -29,7 +34,8 @@ const renderPage = (view, pageName, statusCode) =>
           {
             SITE_TITLE: process.env.SITE_TITLE,
             PAGE_NAME: pageName,
-            PRODUCT: req.params.product || null
+            PRODUCT: req.params.product || null,
+            PRODUCT_DETAILS: req.params.product != null ? await getProductBySlug(req.params.product) : null
           });
   
       }

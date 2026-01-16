@@ -14,7 +14,6 @@ let cookieParser = require('cookie-parser');
 let logger = require('morgan');
 let cors = require('cors');
 
-
 /* app.use((req, res, next) => 
 {
   if (req.url.startsWith('/shop/')) 
