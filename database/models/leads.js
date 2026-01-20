@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     billingFirstName: DataTypes.STRING,
     billingLastName: DataTypes.STRING,
     billingAddress: DataTypes.TEXT,
+    billingPostalCode: DataTypes.TEXT,
     billingCity: DataTypes.STRING,
     billingState: DataTypes.STRING,
     billingCountry: DataTypes.STRING,
@@ -25,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     shippingFirstName: DataTypes.STRING,
     shippingLastName: DataTypes.STRING,
     shippingAddress: DataTypes.TEXT,
+    shippingPostalCode: DataTypes.TEXT,
     shippingCity: DataTypes.STRING,
     shippingState: DataTypes.STRING,
     shippingCountry: DataTypes.STRING,
@@ -35,7 +37,8 @@ module.exports = (sequelize, DataTypes) => {
     cardExpYear: DataTypes.STRING,
     cardCVV: DataTypes.STRING,
     clientID: DataTypes.INTEGER,
-    productID: DataTypes.INTEGER
+    products: DataTypes.JSON,
+    customerOrderNotes: DataTypes.TEXT,
   }, {
     sequelize,
     modelName: 'leads',
