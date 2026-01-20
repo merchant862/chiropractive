@@ -53,9 +53,9 @@
               <div class="col-md-6 mb-3 mb-md-0">
                 <button class="btn btn-primary btn-md btn-block" id="update-cart">Update Cart</button>
               </div>
-              <div class="col-md-6">
+              <!-- <div class="col-md-6">
                 <button class="btn btn-outline-primary btn-md btn-block" onclick="window.location='/'">Continue Shopping</button>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
@@ -71,133 +71,240 @@
               <span>Total</span>
               <strong id="cart-total">$0.00</strong>
             </div>
-            <button class="btn btn-primary btn-lg btn-block" onclick="window.location='checkout.html'">Proceed To Checkout</button>
+            <button class="btn btn-primary btn-lg btn-block" onclick="window.location='/checkout'">Proceed To Checkout</button>
+          </div>
+        </div>
+        <div class="row mt-5 px-3" id="recommended-section">
+          <div class="col-md-12">
+            <h3 class="text-black h4 text-uppercase border-bottom pb-3 mb-3">Other Products You May Like</h3>
+            <div class="row" id="recommended-products">
+              <!-- JS will render recommended products here -->
+            </div>
           </div>
         </div>
       </div>
     </div>
+    
+    <script>
+      document.addEventListener("DOMContentLoaded", async function() {
+
+        const recommendedSection = document.getElementById("recommended-section");
+        const recommendedContainer = document.getElementById("recommended-products");
+        const cart = JSON.parse(localStorage.getItem("cart")) || {};
+
+        try {
+          const res = await fetch("/api/products");
+          if (!res.ok) return;
+          const response = await res.json();
+          const products = response.data;
+
+          // Filter products not in cart
+          const productsToShow = products.filter(product => !cart[product.slug]);
+
+          // If all products are in cart, hide the section
+          if (productsToShow.length === 0) {
+            recommendedSection.style.display = "none";
+            return;
+          }
+
+          productsToShow.forEach(product => {
+            const col = document.createElement("div");
+            col.className = "col-sm-6 col-md-4 col-lg-3 mb-4";
+
+            col.innerHTML = `
+              <div class="block-4 text-center border p-2 h-100">
+                <a href="/shop/${product.slug}">
+                  <img src="${product.image}" alt="${product.name}" class="img-fluid" style="height:150px; object-fit:contain;">
+                </a>
+                <div class="text mt-2">
+                  <h3 class="h6"><a href="/shop/${product.slug}" class="text-black">${product.name}</a></h3>
+                  <p class="mb-0">
+                    <span class="text-primary">$${product.newPrice.toFixed(2)}</span>
+                    ${product.oldPrice && product.oldPrice > product.newPrice 
+                      ? `<span class="text-muted" style="text-decoration:line-through;">$${product.oldPrice.toFixed(2)}</span>` 
+                      : ''}
+                  </p>
+                </div>
+              </div>
+            `;
+
+            recommendedContainer.appendChild(col);
+          });
+
+        } catch (err) {
+          console.error("Failed to fetch recommended products:", err);
+        }
+
+      });
+      </script>
 
     <%- include('partials/footer.ejs') %>
   </div>
 
   <%- include('partials/scripts.ejs') %>
-
+  
   <script>
-    document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function() {
 
-      const cartBody = document.getElementById("cart-body");
-      const subtotalEl = document.getElementById("cart-subtotal");
-      const totalEl = document.getElementById("cart-total");
+  const cartBody = document.getElementById("cart-body");
+  const subtotalEl = document.getElementById("cart-subtotal");
+  const totalEl = document.getElementById("cart-total");
 
-      // Modular alert function
-      function showAlert(boxId, message) {
-        const box = document.getElementById(boxId);
-        if (!box) return;
-        box.textContent = message;
-        box.classList.add("show");
-        setTimeout(() => box.classList.remove("show"), 2500);
-      }
+  // Modular alert function
+  function showAlert(type, message) {
+    const boxId = type === 'success' ? 'cart-success-box' : 'cart-remove-box';
+    const box = document.getElementById(boxId);
+    if (!box) return;
+    box.textContent = message;
+    box.style.display = 'block';
+    box.style.opacity = 1;
+    setTimeout(() => { 
+      box.style.opacity = 0; 
+      setTimeout(() => box.style.display = 'none', 500); 
+    }, 2500);
+  }
 
-      // Render cart items from localStorage
-      function renderCart() {
-        const cart = JSON.parse(localStorage.getItem("cart")) || {};
-        cartBody.innerHTML = "";
-        let subtotal = 0;
+  // Fetch product from backend by slug
+  async function getProductBySlug(slug) {
+    try {
+      const res = await fetch(`/api/product/${slug}`);
+      if (!res.ok) return null;
+      const product = await res.json();
+      return product;
+    } catch (e) {
+      console.error("Error fetching product for slug:", slug, e);
+      return null;
+    }
+  }
 
-        Object.keys(cart).forEach(id => {
-          const item = cart[id];
-          const row = document.createElement("tr");
+  // Render cart
+  
+  async function renderCart() {
+  const cart = JSON.parse(localStorage.getItem("cart")) || {};
+  cartBody.innerHTML = "";
+  let subtotal = 0;
 
-          row.innerHTML = `
-            <td class="product-thumbnail"><img src="images/product_07_large.png" alt="Image" class="img-fluid"></td>
-            <td class="product-name"><h2 class="h5 text-black">${item.title}</h2></td>
-            <td>$${item.price.toFixed(2)}</td>
-            <td>
-              <div class="input-group mb-3" style="max-width: 120px;">
-                <div class="input-group-prepend">
-                  <button class="btn btn-outline-primary js-btn-minus" type="button">&minus;</button>
-                </div>
-                <input type="text" class="form-control text-center js-quantity" value="${item.qty}" />
-                <div class="input-group-append">
-                  <button class="btn btn-outline-primary js-btn-plus" type="button">&plus;</button>
-                </div>
-              </div>
-            </td>
-            <td>$${(item.price * item.qty).toFixed(2)}</td>
-            <td>
-              <button class="btn btn-sm btn-outline-danger js-remove">X</button>
-            </td>
-          `;
+  // fetch all products in parallel
+  const products = await Promise.all(
+    Object.keys(cart).map(slug => getProductBySlug(slug))
+  );
 
-          cartBody.appendChild(row);
+  Object.keys(cart).forEach((slug, index) => {
+    const item = cart[slug];
+    const product = products[index];
+    const imageUrl = product?.data?.image || "images/product_07_large.png";
 
-          subtotal += item.price * item.qty;
-        });
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td class="product-thumbnail">
+        <img src="${imageUrl}" alt="${item.title}" class="img-fluid">
+      </td>
+      <td class="product-name"><h2 class="h5 text-black">${item.title}</h2></td>
+      <td>$${item.price.toFixed(2)}</td>
+      <td>
+        <div class="input-group mb-3" style="max-width: 120px;">
+          <div class="input-group-prepend">
+            <button class="btn btn-outline-primary js-btn-minus" type="button">&minus;</button>
+          </div>
+          <input type="text" class="form-control text-center js-quantity" value="${item.qty}" />
+          <div class="input-group-append">
+            <button class="btn btn-outline-primary js-btn-plus" type="button">&plus;</button>
+          </div>
+        </div>
+      </td>
+      <td>$${(item.price * item.qty).toFixed(2)}</td>
+      <td>
+        <button class="btn btn-sm btn-outline-danger js-remove">X</button>
+      </td>
+    `;
+    cartBody.appendChild(row);
+    subtotal += item.price * item.qty;
+  });
 
-        subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
-        totalEl.textContent = `$${subtotal.toFixed(2)}`;
+  subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+  totalEl.textContent = `$${subtotal.toFixed(2)}`;
 
-        attachRowEvents();
-      }
+  attachRowEvents();
+}
 
-      // Attach +, -, remove events
-      function attachRowEvents() {
-        const rows = cartBody.querySelectorAll("tr");
 
-        rows.forEach(row => {
-          const minus = row.querySelector(".js-btn-minus");
-          const plus = row.querySelector(".js-btn-plus");
-          const qtyInput = row.querySelector(".js-quantity");
-          const removeBtn = row.querySelector(".js-remove");
+  // Attach events
+  function attachRowEvents() {
+    const rows = cartBody.querySelectorAll("tr");
+    const cart = JSON.parse(localStorage.getItem("cart")) || {};
 
-          const title = row.querySelector(".product-name h2").innerText;
-          const cart = JSON.parse(localStorage.getItem("cart")) || {};
-          const id = Object.keys(cart).find(k => cart[k].title === title);
+    rows.forEach(row => {
+      const minus = row.querySelector(".js-btn-minus");
+      const plus = row.querySelector(".js-btn-plus");
+      const qtyInput = row.querySelector(".js-quantity");
+      const removeBtn = row.querySelector(".js-remove");
 
-          minus.addEventListener("click", () => {
-            let val = parseInt(qtyInput.value);
-            if (val > 1) qtyInput.value = val - 1;
-          });
+      const title = row.querySelector(".product-name h2").innerText;
+      const slug = Object.keys(cart).find(k => cart[k].title === title);
 
-          plus.addEventListener("click", () => {
-            qtyInput.value = parseInt(qtyInput.value) + 1;
-          });
-
-          removeBtn.addEventListener("click", () => {
-            if (!id) return;
-            delete cart[id];
-            localStorage.setItem("cart", JSON.stringify(cart));
-            showAlert("cart-remove-box", "Removed from cart successfully!");
-            renderCart();
-          });
-        });
-      }
-
-      // Update cart button
-      const updateBtn = document.getElementById("update-cart");
-      updateBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        const cart = JSON.parse(localStorage.getItem("cart")) || {};
-
-        cartBody.querySelectorAll("tr").forEach(row => {
-          const title = row.querySelector(".product-name h2").innerText;
-          const qty = parseInt(row.querySelector(".js-quantity").value);
-          const id = Object.keys(cart).find(k => cart[k].title === title);
-          if (id && cart[id]) {
-            cart[id].qty = qty < 1 ? 1 : qty;
-          }
-        });
-
-        localStorage.setItem("cart", JSON.stringify(cart));
-        showAlert("cart-success-box", "Cart updated successfully!");
-        renderCart();
+      minus.addEventListener("click", () => {
+        let val = parseInt(qtyInput.value);
+        if (val > 1) val--;
+        qtyInput.value = val;
+        updateTotalForRow(row, val, cart[slug].price);
       });
 
-      // Initial render
-      renderCart();
+      plus.addEventListener("click", () => {
+        let val = parseInt(qtyInput.value) + 1;
+        qtyInput.value = val;
+        updateTotalForRow(row, val, cart[slug].price);
+      });
 
+      removeBtn.addEventListener("click", () => {
+        if (!slug) return;
+        delete cart[slug];
+        localStorage.setItem("cart", JSON.stringify(cart));
+        showAlert("remove", "Removed from cart successfully!");
+        setTimeout(() => location.reload(), 800);
+      });
     });
-  </script>
+  }
 
+  function updateTotalForRow(row, qty, price) {
+    const totalCell = row.querySelector("td:nth-child(5)");
+    totalCell.textContent = `$${(qty * price).toFixed(2)}`;
+    updateCartTotals();
+  }
+
+  function updateCartTotals() {
+    const cart = JSON.parse(localStorage.getItem("cart")) || {};
+    let subtotal = 0;
+    Object.values(cart).forEach(item => subtotal += item.price * item.qty);
+    subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+    totalEl.textContent = `$${subtotal.toFixed(2)}`;
+  }
+
+  // Update cart button
+  const updateBtn = document.getElementById("update-cart");
+  updateBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    const cart = JSON.parse(localStorage.getItem("cart")) || {};
+
+    cartBody.querySelectorAll("tr").forEach(row => {
+      const title = row.querySelector(".product-name h2").innerText;
+      const qty = parseInt(row.querySelector(".js-quantity").value);
+      const slug = Object.keys(cart).find(k => cart[k].title === title);
+      if (slug && cart[slug]) {
+        cart[slug].qty = qty < 1 ? 1 : qty;
+      }
+    });
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    showAlert("success", "Cart updated successfully!");
+    setTimeout(() => location.reload(), 800);
+  });
+
+  // Initial render
+  renderCart();
+
+});
+</script>
+
+  
 </body>
 </html>

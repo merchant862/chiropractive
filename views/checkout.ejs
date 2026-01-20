@@ -311,6 +311,82 @@
 
   </div>
 
+<script>
+document.addEventListener("DOMContentLoaded", async function () {
+  // Hide Returning Customer & Coupon Code sections
+  const returningDiv = document.querySelector(".site-section .row.mb-5 .col-md-12 .bg-light");
+  const couponDiv = [...document.querySelectorAll(".row.mb-5 .col-md-12")].find(el => 
+    el.querySelector("h2")?.textContent.includes("Coupon Code")
+  );
+  if (returningDiv) returningDiv.style.display = "none";
+  if (couponDiv) couponDiv.style.display = "none";
+
+  const orderTableBody = document.querySelector(".site-block-order-table tbody");
+  if (!orderTableBody) return;
+
+  // Get cart from localStorage
+  const cart = JSON.parse(localStorage.getItem("cart")) || {};
+  if (Object.keys(cart).length === 0) {
+    orderTableBody.innerHTML = `<tr><td colspan="2">Your cart is empty.</td></tr>`;
+    return;
+  }
+
+  // Fetch all products from backend
+  let products = [];
+  try {
+    const res = await fetch("/api/products");
+    const json = await res.json();
+    if (json.success && Array.isArray(json.data)) products = json.data;
+  } catch (err) {
+    console.error("Failed to fetch products:", err);
+  }
+
+  // Map products by slug for easy lookup
+  const productMap = {};
+  products.forEach(p => productMap[p.slug] = p);
+
+  orderTableBody.innerHTML = "";
+  let subtotal = 0;
+
+  // Populate order table
+  Object.keys(cart).forEach(key => {
+    const item = cart[key];           // cart item
+    const product = productMap[key];  // backend product matching slug (cart key)
+
+    const imageSrc = product?.image || "images/product_07_large.png"; // fallback
+    const total = item.price * item.qty;
+    subtotal += total;
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td style="display: flex; align-items: center;">
+        <img src="${imageSrc}" alt="${item.title}" style="width:50px; height:50px; object-fit:cover; margin-right:10px;">
+        ${item.title} <strong class="mx-2">x</strong> ${item.qty}
+      </td>
+      <td>$${total.toFixed(2)}</td>
+    `;
+    orderTableBody.appendChild(tr);
+  });
+
+  // Subtotal row
+  const subtotalRow = document.createElement("tr");
+  subtotalRow.innerHTML = `
+    <td class="text-black font-weight-bold"><strong>Cart Subtotal</strong></td>
+    <td class="text-black">$${subtotal.toFixed(2)}</td>
+  `;
+  orderTableBody.appendChild(subtotalRow);
+
+  // Total row
+  const totalRow = document.createElement("tr");
+  totalRow.innerHTML = `
+    <td class="text-black font-weight-bold"><strong>Order Total</strong></td>
+    <td class="text-black font-weight-bold"><strong>$${subtotal.toFixed(2)}</strong></td>
+  `;
+  orderTableBody.appendChild(totalRow);
+});
+</script>
+
+
   <%- include('partials/scripts.ejs') %>
 
 </body>
