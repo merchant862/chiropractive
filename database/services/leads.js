@@ -15,6 +15,7 @@ async function addLead(payload)
   catch (error) { throw error }
 }
 
-module.exports = {
+module.exports = 
+{
   addLead
 };

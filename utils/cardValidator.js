@@ -1,62 +1,40 @@
-const fs = require('fs');
-const path = require('path');
-const cardValidator = require('card-validator');
+const cardValidator = require("card-validator");
 
-const FILE_PATH = path.join(__dirname, './cards.txt');
+function validateCard({ cardNo, cardExpMonth, cardExpYear, cardCVV }) 
+{
+  const result = 
+  { valid: true, brand: null, errors: {} };
 
-function checkCards() {
-  const file = fs.readFileSync(FILE_PATH, 'utf8');
+    // CARD NUMBER
+    const numberCheck = cardValidator.number(cardNo);
+    
+    if (!numberCheck.isValid) 
+    {
+        result.valid = false;
+        result.errors.cardNo = "Invalid card number";
+    } 
+    
+    else result.brand = numberCheck.card.type;
 
-  const lines = file
-    .split('\n')
-    .map(l => l.trim())
-    .filter(l => l && !l.startsWith('#'));
+    // EXPIRY
+    const expiryCheck = cardValidator.expirationDate({ month: cardExpMonth, year: cardExpYear });
+    
+    if (!expiryCheck.isValid) 
+    {
+        result.valid = false;
+        result.errors.expiry = "Card expired or invalid expiry date";
+    }
 
-  const results = [];
+    // CVV
+    const cvvCheck = cardValidator.cvv( cardCVV, numberCheck.card?.code?.size );
+    
+    if (!cvvCheck.isValid) 
+    {
+        result.valid = false;
+        result.errors.cvv = "Invalid CVV";
+    }
 
-  for (const line of lines) {
-    const [brand, number, expMonth, expYear, cvv] =
-      line.split('|').map(v => v.trim());
-
-    const numberCheck = cardValidator.number(number);
-    const expiryCheck = cardValidator.expirationDate({
-      month: expMonth,
-      year: expYear,
-    });
-    const cvvCheck = cardValidator.cvv(cvv, numberCheck.card?.code?.size);
-
-    const isValid =
-      numberCheck.isValid &&
-      expiryCheck.isValid &&
-      cvvCheck.isValid;
-
-    results.push({
-      brand,
-      number,
-      expMonth,
-      expYear,
-      cvv,
-      valid: isValid,
-      errors: {
-        number: numberCheck.isValid ? null : 'Invalid card number',
-        expiry: expiryCheck.isValid ? null : 'Expired / invalid expiry',
-        cvv: cvvCheck.isValid ? null : 'Invalid CVV',
-      },
-    });
-  }
-
-  return results;
+    return result;
 }
 
-// run directly
-if (require.main === module) {
-  const results = checkCards();
-  results.forEach(r => {
-    console.log(
-      `${r.brand} | ${r.number} => ${r.valid ? '✅ VALID' : '❌ INVALID'}`
-    );
-    if (!r.valid) console.log('   ', r.errors);
-  });
-}
-
-module.exports = checkCards;
+module.exports = validateCard;

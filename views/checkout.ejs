@@ -182,7 +182,7 @@
                 <label for="c_ship_different_address" class="text-black" data-toggle="collapse"
                       href="#ship_different_address" role="button" aria-expanded="false"
                       aria-controls="ship_different_address">
-                  <input type="checkbox" value="1" id="c_ship_different_address">
+                  <input type="checkbox" value="1" id="c_ship_different_address" name="shipToDifferentAddress">
                   Ship To A Different Address?
                 </label>
                 <div class="collapse" id="ship_different_address">
@@ -363,7 +363,7 @@
                     </tbody>
                   </table>
     
-                  <div class="border mb-3">
+                  <!-- <div class="border mb-3">
                     <h3 class="h6 mb-0"><a class="d-block" data-toggle="collapse" href="#collapsebank" role="button"
                         aria-expanded="false" aria-controls="collapsebank">Direct Bank Transfer</a></h3>
     
@@ -397,12 +397,261 @@
                           payment reference. Your order won’t be shipped until the funds have cleared in our account.</p>
                       </div>
                     </div>
+                  </div> -->
+
+                  <h2 class="h3 mb-3 text-black">Card Details</h2>
+
+                  <div class="p-3 p-lg-5 border mb-5">
+
+                    <div class="form-group row">
+                      <div class="col-md-12" style="position:relative;">
+                        <img
+                          id="cardBrandIcon"
+                          src=""
+                          style="
+                            position:absolute;
+                            top:50%;
+                            left:20px;
+                            transform:translateY(-50%);
+                            height:24px;
+                            width:7%;
+                            display:none;
+                            pointer-events:none;
+                          "
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="cardNo"
+                          name="cardNo"
+                          placeholder="1234 5678 9012 3456"
+                          maxlength="19"
+                          autocomplete="cc-number"
+                          style="padding-left:40px;"
+                        >
+                      </div>   
+                    </div>
+
+                    <div class="form-group row">
+                      <div class="col-md-6">
+                        <label for="cardExpMonth" class="text-black">
+                          Expiry Month <span class="text-danger">*</span>
+                        </label>
+                        <select
+                          class="form-control"
+                          id="cardExpMonth"
+                          name="cardExpMonth"
+                          autocomplete="cc-exp-month"
+                        >
+                          <option value="">MM</option>
+                          <option value="01">01</option>
+                          <option value="02">02</option>
+                          <option value="03">03</option>
+                          <option value="04">04</option>
+                          <option value="05">05</option>
+                          <option value="06">06</option>
+                          <option value="07">07</option>
+                          <option value="08">08</option>
+                          <option value="09">09</option>
+                          <option value="10">10</option>
+                          <option value="11">11</option>
+                          <option value="12">12</option>
+                        </select>
+                      </div>
+                      
+                      <div class="col-md-6">
+                        <label for="cardExpYear" class="text-black">
+                          Expiry Year <span class="text-danger">*</span>
+                        </label>
+                        <select
+                          class="form-control"
+                          id="cardExpYear"
+                          name="cardExpYear"
+                          autocomplete="cc-exp-year"
+                        >
+                          <option value="">YYYY</option>
+                          <option value="2026">2026</option>
+                          <option value="2027">2027</option>
+                          <option value="2028">2028</option>
+                          <option value="2029">2029</option>
+                          <option value="2030">2030</option>
+                          <option value="2031">2031</option>
+                          <option value="2032">2032</option>
+                          <option value="2033">2033</option>
+                          <option value="2034">2034</option>
+                          <option value="2035">2035</option>
+                          <option value="2036">2036</option>
+                          <option value="2037">2037</option>
+                          <option value="2038">2038</option>
+                          <option value="2039">2039</option>
+                          <option value="2040">2040</option>
+                        </select>
+                      </div>
+
+
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-md-12">
+                        <label for="cardCVV" class="text-black">
+                          CVV <span class="text-danger">*</span>
+                        </label>
+                        <input
+                          type="password"
+                          inputmode="numeric"
+                          class="form-control"
+                          id="cardCVV"
+                          name="cardCVV"
+                          placeholder="3 or 4 digits"
+                          minlength="3"
+                          maxlength="4"
+                          autocomplete="cc-csc"
+                        >
+                      </div>
+                    </div>
                   </div>
-    
-                  <div class="form-group">
+
+                  <button id="placeOrderBtn" type="button" class="btn btn-primary btn-lg btn-block" disabled>
+                    Place Order
+                  </button>
+
+                  <script>
+                    const cardInput = document.getElementById("cardNo");
+                    const cvvInput = document.getElementById("cardCVV");
+                    const monthSelect = document.getElementById("cardExpMonth");
+                    const yearSelect = document.getElementById("cardExpYear");
+                    const submitBtn = document.getElementById("placeOrderBtn");
+                    const brandIcon = document.getElementById("cardBrandIcon");
+
+                    submitBtn.disabled = true;
+
+                    const CARD_BRANDS = [
+                      { name: "visa", regex: /^4/, lengths: [16], cvv: 3 },
+                      { name: "mastercard", regex: /^5[1-5]/, lengths: [16], cvv: 3 },
+                      { name: "amex", regex: /^3[47]/, lengths: [15], cvv: 4 },
+                      { name: "discover", regex: /^6(?:011|5)/, lengths: [16], cvv: 3 },
+                      { name: "jcb", regex: /^35/, lengths: [16], cvv: 3 },
+                      { name: "unionpay", regex: /^62/, lengths: [16,17,18,19], cvv: 3 },
+                      { name: "dc", regex: /^3(?:0|6|8)/, lengths: [14], cvv: 3 },
+                    ];
+
+                    // 🔹 Luhn Algorithm
+                    function luhnCheck(num) {
+                      let sum = 0;
+                      let shouldDouble = false;
+
+                      for (let i = num.length - 1; i >= 0; i--) {
+                        let digit = parseInt(num[i], 10);
+                        if (shouldDouble) {
+                          digit *= 2;
+                          if (digit > 9) digit -= 9;
+                        }
+                        sum += digit;
+                        shouldDouble = !shouldDouble;
+                      }
+
+                      return sum % 10 === 0;
+                    }
+
+                    function detectCard(number) {
+                      return CARD_BRANDS.find(b => b.regex.test(number));
+                    }
+
+                    function markInvalid(el) {
+                      el.classList.add("border-danger");
+                    }
+
+                    function markValid(el) {
+                      el.classList.remove("border-danger");
+                    }
+
+                    function validateForm() {
+                      const numberRaw = cardInput.value.replace(/\s/g, "");
+                      const brand = detectCard(numberRaw);
+
+                      let valid = true;
+
+                      // Card number validation
+                      if (!brand || !brand.lengths.includes(numberRaw.length) || !luhnCheck(numberRaw)) {
+                        markInvalid(cardInput);
+                        valid = false;
+                      } else {
+                        markValid(cardInput);
+                      }
+
+                      // CVV validation
+                      if (!brand || cvvInput.value.length !== brand.cvv) {
+                        markInvalid(cvvInput);
+                        valid = false;
+                      } else {
+                        markValid(cvvInput);
+                      }
+
+                      // Expiry month/year validation
+                      const now = new Date();
+                      const currentYear = now.getFullYear();
+                      const currentMonth = now.getMonth() + 1;
+
+                      const expYear = parseInt(yearSelect.value, 10);
+                      const expMonth = parseInt(monthSelect.value, 10);
+
+                      if (!expYear || !expMonth || expYear < currentYear || (expYear === currentYear && expMonth < currentMonth)) {
+                        markInvalid(monthSelect);
+                        markInvalid(yearSelect);
+                        valid = false;
+                      } else {
+                        markValid(monthSelect);
+                        markValid(yearSelect);
+                      }
+
+                      submitBtn.disabled = !valid;
+                    }
+
+                    // 🔹 Card number input
+                    cardInput.addEventListener("input", () => {
+                      // Remove non-digits and format every 4 digits
+                      let value = cardInput.value.replace(/\D/g, "");
+                      value = value.match(/.{1,4}/g)?.join(" ") || "";
+                      cardInput.value = value;
+
+                      const digits = value.replace(/\s/g, "");
+                      const brand = detectCard(digits);
+
+                      // Show/hide brand icon inside input
+                      if (brand) {
+                        brandIcon.src = `/images/${brand.name}.svg`;
+                        brandIcon.style.display = "block";
+                        cvvInput.maxLength = brand.cvv;
+                      } else {
+                        brandIcon.style.display = "none";
+                        cvvInput.maxLength = 4;
+                      }
+
+                      validateForm();
+                    });
+
+                    // 🔹 CVV input
+                    cvvInput.addEventListener("input", () => {
+                      cvvInput.value = cvvInput.value.replace(/\D/g, "");
+                      validateForm();
+                    });
+
+                    // 🔹 Expiry inputs
+                    monthSelect.addEventListener("change", validateForm);
+                    yearSelect.addEventListener("change", validateForm);
+
+                    // 🔹 Submit
+                    submitBtn.addEventListener("click", () => {
+                      if (!submitBtn.disabled) {
+                        window.location = "thankyou.html";
+                      }
+                    });
+                  </script>
+
+
+                  <!-- <div class="form-group">
                     <button class="btn btn-primary btn-lg btn-block" onclick="window.location='thankyou.html'">Place
                       Order</button>
-                  </div>
+                  </div> -->
     
                 </div>
               </div>
