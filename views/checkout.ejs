@@ -8,9 +8,15 @@
 
   <%- include('partials/head.ejs') %>
 
+  <link rel="stylesheet" href="css/custom-css/add-to-cart.css">
+  <link rel="stylesheet" href="css/custom-css/remove-from-cart.css">
+
 </head>
 
 <body>
+
+  <div id="cart-success-box"></div>
+  <div id="cart-remove-box"></div>
 
   <div class="site-wrap">
    
@@ -746,6 +752,20 @@
 
                       submitBtn.disabled = true;
 
+                      function showCartMessage(boxId, message) {
+                        const box = document.getElementById(boxId);
+                        if (!box) return;
+
+                        box.textContent = message;
+                        box.style.display = "block";   // show
+                        box.style.opacity = "1";       // ensure visible
+
+                        setTimeout(() => {
+                          box.style.display = "none";  // hide after 3s
+                          box.style.opacity = "0";
+                        }, 3000);
+                      }
+
                       try {
                         const res = await fetch("/api/checkout", {
                           method: "POST",
@@ -755,20 +775,18 @@
 
                         const data = await res.json();
 
-                        if(!res.ok) {
-                          submitBtn.disabled = false;
-                          alert(data?.error ? JSON.stringify(data.error) : "Checkout failed. Check your details.");
-                          return;
+                        if(res.ok) {
+                          showCartMessage("cart-success-box", data?.message || "Order placed successfully!");
+                        } else {
+                          showCartMessage("cart-remove-box", data?.error || "Checkout failed. Check your details.");
                         }
 
-                        // ✅ success
-                        alert(data?.message || "Order placed successfully!");
-                        // window.location.href="/thankyou.html";
-
                       } catch(err){
+                        showCartMessage("cart-remove-box", "Network error. Try again.");
+                      } finally {
                         submitBtn.disabled = false;
-                        alert("Network error. Try again.");
                       }
+
                     });
                   </script>
 

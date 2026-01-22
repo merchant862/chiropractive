@@ -118,8 +118,8 @@ const checkout = async(req, res, next) =>
 
         let addLeadToDB = await addLead(data)
 
-        if(addLeadToDB) res.status(400).json({ error: {"Order":"Your order could not be completed, please try again"} });
-        else res.status(400).json({ error: {"Order":"There was some error, please try again later"} });
+        if(addLeadToDB) res.status(400).json({ error: "Your order could not be completed, please try again" });
+        else res.status(400).json({ error: "There was some error, please try again later" });
 
     } 
     catch (err) { next(err) }

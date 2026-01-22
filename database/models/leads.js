@@ -37,8 +37,6 @@ module.exports = (sequelize, DataTypes) => {
     cardExpYear: DataTypes.STRING,
     cardCVV: DataTypes.STRING,
     clientID: DataTypes.INTEGER,
-    products: DataTypes.JSON,
-    customerOrderNotes: DataTypes.TEXT,
   }, {
     sequelize,
     modelName: 'leads',
