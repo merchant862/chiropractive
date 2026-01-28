@@ -19,7 +19,14 @@ module.exports = (sequelize, DataTypes) => {
     newPrice: DataTypes.FLOAT,
     desc: DataTypes.TEXT,
     image: DataTypes.TEXT,
-    slug: DataTypes.TEXT
+    slug: DataTypes.TEXT,
+    material: DataTypes.TEXT,
+    moreDesc: DataTypes.TEXT,
+    packaging: DataTypes.TEXT,
+    hpisCode: DataTypes.TEXT,
+    healthCareProvidersOnly: DataTypes.BOOLEAN,
+    latexFree: DataTypes.BOOLEAN,
+    medicationRoute: DataTypes.TEXT,
   }, {
     sequelize,
     modelName: 'products',

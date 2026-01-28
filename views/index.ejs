@@ -18,25 +18,28 @@
   <!-- HERO SLIDER -->
   <div class="owl-carousel owl-single px-0">
 
-    <div class="site-blocks-cover overlay" style="background-image: url('images/hero_bg.jpg');">
+    <div class="site-blocks-cover overlay" style="background-image: url('images/pilates-class-equipment-bench.jpg');">
       <div class="container">
         <div class="row">
           <div class="col-lg-12 mx-auto align-self-center">
             <div class="site-block-cover-content text-center">
               <h1 class="mb-0">
-                Professional <strong class="text-primary">Chiropractic Care</strong>
+                Smart <strong class="text-primary">Spine & Posture Support</strong>
               </h1>
 
               <div class="row justify-content-center mb-5">
-                <div class="col-lg-6 text-center">
+                <div class="col-lg-7 text-center">
                   <p>
-                    Natural and effective treatment for back pain, neck pain, posture correction, and spinal alignment.
+                    Carefully selected posture and spine support products to help reduce daily discomfort,
+                    improve alignment, and support a healthier lifestyle.
                   </p>
                 </div>
               </div>
 
               <p>
-                <a href="/contact" class="btn btn-primary px-5 py-3">Book Appointment</a>
+                <a href="#products-wrap" class="btn btn-primary px-5 py-3">
+                  View Support Products
+                </a>
               </p>
             </div>
           </div>
@@ -44,23 +47,26 @@
       </div>
     </div>
 
-    <div class="site-blocks-cover overlay" style="background-image: url('images/hero_bg_2.jpg');">
+    <div class="site-blocks-cover overlay" style="background-image: url('images/medium-shot-physiotherapist-helping-patient.jpg');">
       <div class="container">
         <div class="row">
           <div class="col-lg-12 mx-auto align-self-center">
             <div class="site-block-cover-content text-center">
               <h1 class="mb-0">
-                Support Your <strong class="text-primary">Spine & Posture</strong>
+                Get Guidance Before You Buy
               </h1>
               <div class="row justify-content-center mb-5">
-                <div class="col-lg-6 text-center">
+                <div class="col-lg-7 text-center">
                   <p>
-                    Explore chiropractic support products designed to improve posture and reduce daily discomfort.
+                    Not sure which product is right for you?  
+                    Call us for basic posture and product guidance to help you make an informed choice.
                   </p>
                 </div>
               </div>
               <p>
-                <a href="/shop" class="btn btn-primary px-5 py-3">View Products</a>
+                <a href="mailto:support@pharmative.pk" class="btn btn-primary px-5 py-3">
+                  Talk to Us
+                </a>
               </p>
             </div>
           </div>
@@ -78,9 +84,9 @@
         <div class="col-lg-4">
           <div class="feature">
             <span class="wrap-icon flaticon-24-hours-drugs-delivery"></span>
-            <h3><a href="#">Experienced Chiropractors</a></h3>
+            <h3><a href="#">Posture Support Products</a></h3>
             <p>
-              Qualified professionals providing safe and effective spinal adjustments.
+              Products designed to support the neck, back, and spine during daily activities and rest.
             </p>
           </div>
         </div>
@@ -88,9 +94,9 @@
         <div class="col-lg-4">
           <div class="feature">
             <span class="wrap-icon flaticon-medicine"></span>
-            <h3><a href="#">Drug-Free Treatment</a></h3>
+            <h3><a href="#">Non-Medical Guidance</a></h3>
             <p>
-              Natural pain relief without medication or invasive procedures.
+              We provide product-related guidance only and do not offer medical diagnosis or treatment.
             </p>
           </div>
         </div>
@@ -98,9 +104,9 @@
         <div class="col-lg-4">
           <div class="feature">
             <span class="wrap-icon flaticon-test-tubes"></span>
-            <h3><a href="#">Posture & Spine Care</a></h3>
+            <h3><a href="#">Everyday Spine Care</a></h3>
             <p>
-              Long-term solutions for posture correction and spinal health.
+              Support your posture at work, during travel, and while resting with the right tools.
             </p>
           </div>
         </div>
@@ -114,55 +120,38 @@
     <div class="container">
       <div class="row">
         <div class="title-section text-center col-12">
-          <h2>Chiropractic <strong class="text-primary">Support Products</strong></h2>
+          <h2>Posture & <strong class="text-primary">Spine Support Products</strong></h2>
         </div>
       </div>
 
       <div class="row">
-        <div class="col-md-12 block-3 products-wrap">
+        <div class="col-md-12 block-3 products-wrap" id="products-wrap">
           <div class="nonloop-block-3 owl-carousel">
 
-            <div class="text-center item mb-4 item-v2">
-              <span class="onsale">Popular</span>
-              <a href="/shop/orthopedic_cervical_pillow">
-                <img src="images/product_03.png" alt="Image">
-              </a>
-              <h3 class="text-dark">
-                <a href="/shop/orthopedic_cervical_pillow">Orthopedic Cervical Pillow</a>
-              </h3>
-              <p class="price">$120.00</p>
-            </div>
+            <% if (PRODUCTS && PRODUCTS.length > 0) { %>
+              <% PRODUCTS.forEach(product => { %>
 
-            <div class="text-center item mb-4 item-v2">
-              <a href="/shop/posture_corrector_belt">
-                <img src="images/product_01.png" alt="Image">
-              </a>
-              <h3 class="text-dark">
-                <a href="/shop/posture_corrector_belt">Posture Corrector Belt</a>
-              </h3>
-              <p class="price">$120.00</p>
-            </div>
+                <div class="text-center item mb-4 item-v2">
+                  <a href="/shop/<%= product.slug %>">
+                    <img src="<%= product.image %>" alt="<%= product.name %>">
+                  </a>
 
-            <div class="text-center item mb-4 item-v2">
-              <span class="onsale">Recommended</span>
-              <a href="/shop/lumbar_support_cushion">
-                <img src="images/product_02.png" alt="Image">
-              </a>
-              <h3 class="text-dark">
-                <a href="/shop/lumbar_support_cushion">Lumbar Support Cushion</a>
-              </h3>
-              <p class="price">$120.00</p>
-            </div>
+                  <h3 class="text-dark">
+                    <a href="/shop/<%= product.slug %>"><%= product.name %></a>
+                  </h3>
 
-            <div class="text-center item mb-4 item-v2">
-              <a href="/shop/therapy_massage_tool">
-                <img src="images/product_04.png" alt="Image">
-              </a>
-              <h3 class="text-dark">
-                <a href="/shop/therapy_massage_tool">Therapy Massage Tool</a>
-              </h3>
-              <p class="price">$120.00</p>
-            </div>
+                  <p class="price">
+                    <% if (product.oldPrice) { %>
+                      <del>$<%= product.oldPrice %></del>
+                    <% } %>
+                    <span>$<%= product.newPrice %></span>
+                  </p>
+                </div>
+
+              <% }) %>
+            <% } else { %>
+              <p class="text-center">Products coming soon</p>
+            <% } %>
 
           </div>
         </div>
@@ -176,27 +165,29 @@
       <div class="row justify-content-center text-center">
         <div class="col-lg-7">
           <h3 class="text-white">
-            Start Your Journey to a Pain-Free Life
+            Need Help Choosing the Right Product?
           </h3>
           <p class="text-white">
-            Book a chiropractic consultation and take the first step toward better mobility and posture.
+            Call us for basic guidance on posture support products before making a purchase.
           </p>
           <p class="mb-0">
-            <a href="/contact" class="btn btn-outline-white">Book Consultation</a>
+            <a href="mailto:support@pharmative.pk" class="btn btn-outline-white">
+              Get Product Guidance
+            </a>
           </p>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- TESTIMONIALS + WHY US -->
+  <!-- TRUST + WHY US -->
   <div class="site-section">
     <div class="container">
 
       <div class="row justify-content-between">
         <div class="col-lg-6">
           <div class="title-section">
-            <h2>Happy <strong class="text-primary">Patients</strong></h2>
+            <h2>Customer <strong class="text-primary">Feedback</strong></h2>
           </div>
 
           <div class="block-3 products-wrap">
@@ -205,19 +196,20 @@
               <div class="testimony">
                 <blockquote>
                   <p>
-                    &ldquo;My back pain reduced significantly after just a few chiropractic sessions.&rdquo;
+                    &ldquo;The guidance helped me choose the right pillow for my neck pain.
+                    The product quality is excellent.&rdquo;
                   </p>
                 </blockquote>
-                <p class="author">&mdash; Patient Review</p>
+                <p class="author">&mdash; Verified Customer</p>
               </div>
 
               <div class="testimony">
                 <blockquote>
                   <p>
-                    &ldquo;Excellent care and guidance for posture correction and spinal health.&rdquo;
+                    &ldquo;Good quality posture support products and honest guidance without pressure.&rdquo;
                   </p>
                 </blockquote>
-                <p class="author">&mdash; Patient Review</p>
+                <p class="author">&mdash; Verified Customer</p>
               </div>
 
             </div>
@@ -230,17 +222,17 @@
 
             <div class="step-number d-flex mb-4">
               <span>1</span>
-              <p>Detailed spine and posture assessment</p>
+              <p>Carefully selected posture and spine support products</p>
             </div>
 
             <div class="step-number d-flex mb-4">
               <span>2</span>
-              <p>Personalized chiropractic treatment plan</p>
+              <p>Clear and honest product guidance over call</p>
             </div>
 
             <div class="step-number d-flex mb-4">
               <span>3</span>
-              <p>Ongoing care and recovery support</p>
+              <p>No medical claims, no false promises — just support tools</p>
             </div>
 
           </div>

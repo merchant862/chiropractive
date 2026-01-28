@@ -31,7 +31,7 @@ app.use(express.urlencoded({ extended: false, limit: '1mb' }));
 app.use(cookieParser());
 
 // Security headers
-app.use(helmet());
+//app.use(helmet());
 
 // Optional: custom headers
 app.use(serverHeaders);
@@ -42,7 +42,7 @@ app.use(compression());
 
 //-------------------------------------------
 // Static files with cache
-const oneDay = 24 * 60 * 60 * 1000; // 1 day
+const oneDay = 96 * 60 * 60 * 1000; // 1 day
 app.use('/', express.static(path.join(__dirname, '..', 'public'), { maxAge: oneDay }));
 app.use('/shop', express.static(path.join(__dirname, '..', 'public'), { maxAge: oneDay }));
 

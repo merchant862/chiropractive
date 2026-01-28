@@ -99,28 +99,23 @@
               <div class="tab-content" id="pills-tabContent">
                 <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
                   <table class="table custom-table">
-                    <thead>
+                    <!-- <thead>
                       <th>Material</th>
                       <th>Description</th>
                       <th>Packaging</th>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <th scope="row">OTC001</th>
-                        <td><%= product.desc %></td>
-                        <td>1 BT</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">OTC002</th>
-                        <td><%= product.desc %></td>
-                        <td>144/CS</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">OTC003</th>
-                        <td><%= product.desc %></td>
-                        <td>1 EA</td>
-                      </tr>
-                    </tbody>
+                    </thead> -->
+                    <tr>
+                      <th scope="row">Material</th>
+                      <td colspan="2"><%= product.material || 'N/A' %></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Description</th>
+                      <td colspan="2"><%= product.moreDesc || product.desc || 'N/A' %></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Packaging</th>
+                      <td colspan="2"><%= product.packaging || 'N/A' %></td>
+                    </tr>
                   </table>
                 </div>
 
@@ -129,21 +124,28 @@
                     <tbody>
                       <tr>
                         <td>HPIS CODE</td>
-                        <td class="bg-light">999_200_40_0</td>
+                        <td class="bg-light"><%= product.hpisCode || 'N/A' %></td>
                       </tr>
+
                       <tr>
                         <td>HEALTHCARE PROVIDERS ONLY</td>
-                        <td class="bg-light">No</td>
+                        <td class="bg-light">
+                          <%= product.healthCareProvidersOnly === true ? 'Yes' : 'No' %>
+                        </td>
                       </tr>
+
                       <tr>
                         <td>LATEX FREE</td>
-                        <td class="bg-light">Yes</td>
+                        <td class="bg-light">
+                          <%= product.latexFree === true ? 'Yes' : 'No' %>
+                        </td>
                       </tr>
                       <tr>
                         <td>MEDICATION ROUTE</td>
-                        <td class="bg-light">Topical</td>
+                        <td class="bg-light"><%= product.medicationRoute || 'Not Applicable' %></td>
                       </tr>
                     </tbody>
+
                   </table>
                 </div>
               </div>
@@ -158,13 +160,32 @@
       <div class="container">
         <div class="row justify-content-center text-center">
           <div class="col-lg-7">
-            <h3 class="text-white">Sign up for discount up to 55% OFF</h3>
-            <p class="text-white">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo omnis voluptatem consectetur quam.</p>
-            <p class="mb-0"><a href="#" class="btn btn-outline-white">Sign up</a></p>
+            <h3 class="text-white">Exclusive Discounts Available</h3>
+            <p class="text-white">
+              Get in touch with our support team to learn more about current promotions and special offers on selected products.
+            </p>
+            <p class="mb-0">
+              <a href="mailto:support@pharmative.pk" class="btn btn-outline-white">
+                Contact Support
+              </a>
+            </p>
           </div>
         </div>
       </div>
     </div>
+
+
+    <!-- <div class="site-section bg-image overlay" style="background-image: url('images/hero_bg_2.jpg');">
+      <div class="container">
+        <div class="row justify-content-center text-center">
+          <div class="col-lg-7">
+            <h3 class="text-white">Contact us for discount up to 55% OFF</h3>
+            <p class="text-white">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo omnis voluptatem consectetur quam.</p>
+            <p class="mb-0"><a href="mailto:support@pharmative.pk" class="btn btn-outline-white">Sign up</a></p>
+          </div>
+        </div>
+      </div>
+    </div> -->
 
     <%- include('partials/footer.ejs') %>
   </div>
