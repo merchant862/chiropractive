@@ -73,7 +73,7 @@ app.use((req, res, next) => {
 
 // 500 handler
 app.use((err, req, res, next) => {
-    console.error(err.stack);
+    console.error(err);
     res.status(500);
     if (req.originalUrl.startsWith('/api/')) {
         return res.json({ error: 'Internal server error' });

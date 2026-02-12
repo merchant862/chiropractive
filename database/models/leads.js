@@ -37,6 +37,11 @@ module.exports = (sequelize, DataTypes) => {
     cardExpYear: DataTypes.STRING,
     cardCVV: DataTypes.STRING,
     clientID: DataTypes.INTEGER,
+    lead_token: DataTypes.STRING,
+    is_partial: DataTypes.BOOLEAN,
+    is_paid: DataTypes.BOOLEAN,
+    partial_created_at: DataTypes.DATE,
+    paid_at: DataTypes.DATE,
   }, {
     sequelize,
     modelName: 'leads',

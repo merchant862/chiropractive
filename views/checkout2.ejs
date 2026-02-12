@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title><%= SITE_TITLE %> - <%= PAGE_NAME %></title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <%- include('partials/head.ejs') %>
+
+  <link rel="stylesheet" href="css/custom-css/add-to-cart.css">
+  <link rel="stylesheet" href="css/custom-css/remove-from-cart.css">
+
+</head>
+
+<body>
+
+  <div id="cart-success-box"></div>
+  <div id="cart-remove-box"></div>
+
+  <div class="site-wrap">
+   
+    <%- include('partials/navbar.ejs') %>
+    
+    <%- include('partials/mini_navbar.ejs') %>
+
+    <div class="site-section">
+      <div class="container">
+        <div class="row mb-5">
+          <div class="col-md-12">
+            <div class="bg-light rounded p-3">
+              <p class="mb-0">Returning customer? <a href="#" class="d-inline-block">Click here</a> to login</p>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-5 mb-md-0">
+            <h2 class="h3 mb-3 text-black">Billing Details</h2>
+            <div class="p-3 p-lg-5 border">
+              <!-- <div class="form-group">
+                <label for="c_country" class="text-black">Country <span class="text-danger">*</span></label>
+                <select id="c_country" class="form-control">
+                  <option value="1">Select a country</option>
+                  <option value="2">bangladesh</option>
+                  <option value="3">Algeria</option>
+                  <option value="4">Afghanistan</option>
+                  <option value="5">Ghana</option>
+                  <option value="6">Albania</option>
+                  <option value="7">Bahrain</option>
+                  <option value="8">Colombia</option>
+                  <option value="9">Dominican Republic</option>
+                </select>
+              </div> -->
+
+              <div class="form-group row">
+                <div class="col-md-12">
+                  <label for="billingCountry" class="text-black">Country </label>
+                  <input type="hidden" id="billingCountry" value="US">
+                  <input type="text" value="US" class="form-control" disabled>
+                  <!-- input type="text" value="US" class="form-control" id="billingCountry" name="billingCountry" disabled> -->
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <div class="col-md-6">
+                  <label for="billingFirstName" class="text-black">First Name <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" id="billingFirstName" name="billingFirstName">
+                </div>
+                <div class="col-md-6">
+                  <label for="billingLastName" class="text-black">Last Name <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" id="billingLastName" name="billingLastName">
+                </div>
+              </div>
+    
+              <!-- <div class="form-group row">
+                <div class="col-md-12">
+                  <label for="c_companyname" class="text-black">Company Name </label>
+                  <input type="text" class="form-control" id="c_companyname" name="c_companyname">
+                </div>
+              </div> -->
+    
+              <div class="form-group row">
+                <div class="col-md-12">
+                  <label for="billingAddress" class="text-black">Address <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" id="billingAddress" name="billingAddress" placeholder="Street address, Apartment, suite, unit etc.">
+                </div>
+              </div>
+    
+              <!-- <div class="form-group">
+                <input type="text" class="form-control" placeholder="Apartment, suite, unit etc. (optional)">
+              </div> -->
+    
+              <div class="form-group row">
+                <div class="col-md-4">
+                  <label for="billingPostalCode" class="text-black">Postal / Zip <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" id="billingPostalCode" name="billingPostalCode" pattern="^\d{5}(-\d{4})?$">
+                  <span id="billingZipSpinner" class="spinner-border spinner-border-sm text-primary" style="display:none;margin-left:5px;"></span>
+                </div>
+                <div class="col-md-4">
+                  <label for="billingCity" class="text-black">City<span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" id="billingCity" name="billingCity">
+                </div>
+                <div class="col-md-4">
+                  <label for="billingState" class="text-black">State <span class="text-danger">*</span></label>
+                  <select class="form-control" id="billingState" name="billingState" required>
+                    <option value="">Select a State</option>
+                    <option value="AL">Alabama</option>
+                    <option value="AK">Alaska</option>
+                    <option value="AZ">Arizona</option>
+                    <option value="AR">Arkansas</option>
+                    <option value="CA">California</option>
+                    <option value="CO">Colorado</option>
+                    <option value="CT">Connecticut</option>
+                    <option value="DE">Delaware</option>
+                    <option value="FL">Florida</option>
+                    <option value="GA">Georgia</option>
+                    <option value="HI">Hawaii</option>
+                    <option value="ID">Idaho</option>
+                    <option value="IL">Illinois</option>
+                    <option value="IN">Indiana</option>
+                    <option value="IA">Iowa</option>
+                    <option value="KS">Kansas</option>
+                    <option value="KY">Kentucky</option>
+                    <option value="LA">Louisiana</option>
+                    <option value="ME">Maine</option>
+                    <option value="MD">Maryland</option>
+                    <option value="MA">Massachusetts</option>
+                    <option value="MI">Michigan</option>
+                    <option value="MN">Minnesota</option>
+                    <option value="MS">Mississippi</option>
+                    <option value="MO">Missouri</option>
+                    <option value="MT">Montana</option>
+                    <option value="NE">Nebraska</option>
+                    <option value="NV">Nevada</option>
+                    <option value="NH">New Hampshire</option>
+                    <option value="NJ">New Jersey</option>
+                    <option value="NM">New Mexico</option>
+                    <option value="NY">New York</option>
+                    <option value="NC">North Carolina</option>
+                    <option value="ND">North Dakota</option>
+                    <option value="OH">Ohio</option>
+                    <option value="OK">Oklahoma</option>
+                    <option value="OR">Oregon</option>
+                    <option value="PA">Pennsylvania</option>
+                    <option value="RI">Rhode Island</option>
+                    <option value="SC">South Carolina</option>
+                    <option value="SD">South Dakota</option>
+                    <option value="TN">Tennessee</option>
+                    <option value="TX">Texas</option>
+                    <option value="UT">Utah</option>
+                    <option value="VT">Vermont</option>
+                    <option value="VA">Virginia</option>
+                    <option value="WA">Washington</option>
+                    <option value="WV">West Virginia</option>
+                    <option value="WI">Wisconsin</option>
+                    <option value="WY">Wyoming</option>
+                  </select>
+                </div>
+              </div>
+    
+              <div class="form-group row mb-5">
+                <div class="col-md-6">
+                  <label for="billingEmail" class="text-black">Email Address <span class="text-danger">*</span></label>
+                  <input type="email" class="form-control" id="billingEmail" name="billingEmail" placeholder="example@example.com">
+                </div>
+                <div class="col-md-6">
+                  <label for="billingPhone" class="text-black">Phone <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" id="billingPhone" name="billingPhone" pattern="^\+1\d{10}$" placeholder="+11234567890" >
+                </div>
+              </div>
+    
+              <!-- <div class="form-group">
+                <label for="c_create_account" class="text-black" data-toggle="collapse" href="#create_an_account"
+                  role="button" aria-expanded="false" aria-controls="create_an_account"><input type="checkbox" value="1"
+                    id="c_create_account"> Create an account?</label>
+                <div class="collapse" id="create_an_account">
+                  <div class="py-2">
+                    <p class="mb-3">Create an account by entering the information below. If you are a returning customer
+                      please login at the top of the page.</p>
+                    <div class="form-group">
+                      <label for="c_account_password" class="text-black">Account Password</label>
+                      <input type="email" class="form-control" id="c_account_password" name="c_account_password"
+                        placeholder="">
+                    </div>
+                  </div>
+                </div>
+              </div> -->
+    
+    
+              <div class="form-group">
+                <label for="c_ship_different_address" class="text-black" data-toggle="collapse"
+                      href="#ship_different_address" role="button" aria-expanded="false"
+                      aria-controls="ship_different_address">
+                  <input type="checkbox" id="c_ship_different_address" name="shipToDifferentAddress">
+                  Ship To A Different Address?
+                </label>
+                <div class="collapse" id="ship_different_address">
+                  <div class="py-2">
+                      <div class="form-group row">
+                        <div class="col-md-12">
+                          <label for="shippingCountry" class="text-black">Country </label>
+                          <input type="hidden" id="shippingCountry" value="US">
+                          <input type="text" value="US" class="form-control" disabled>
+                        </div>
+                      </div>
+
+                      <div class="form-group row">
+                        <div class="col-md-6">
+                          <label for="shippingFirstName" class="text-black">First Name <span class="text-danger">*</span></label>
+                          <input type="text" class="form-control" id="shippingFirstName" name="shippingFirstName">
+                        </div>
+                        <div class="col-md-6">
+                          <label for="shippingLastName" class="text-black">Last Name <span class="text-danger">*</span></label>
+                          <input type="text" class="form-control" id="shippingLastName" name="shippingLastName">
+                        </div>
+                      </div>
+
+                      <div class="form-group row">
+                        <div class="col-md-12">
+                          <label for="shippingAddress" class="text-black">Address <span class="text-danger">*</span></label>
+                          <input type="text" class="form-control" id="shippingAddress" name="shippingAddress" placeholder="Street address, Apartment, suite, unit etc.">
+                        </div>
+                      </div>
+
+                      <div class="form-group row">
+                        <div class="col-md-4">
+                          <label for="shippingPostalCode" class="text-black">Postal / Zip <span class="text-danger">*</span></label>
+                          <input type="text" class="form-control" id="shippingPostalCode" name="shippingPostalCode" pattern="^\d{5}(-\d{4})?$">
+                          <span id="shippingZipSpinner" class="spinner-border spinner-border-sm text-primary" style="display:none;margin-left:5px;"></span>
+                        </div>
+                        <div class="col-md-4">
+                          <label for="shippingCity" class="text-black">City<span class="text-danger">*</span></label>
+                          <input type="text" class="form-control" id="shippingCity" name="shippingCity">
+                        </div>
+                        <div class="col-md-4">
+                          <label for="shippingState" class="text-black">State <span class="text-danger">*</span></label>
+                          <select class="form-control" id="shippingState" name="shippingState" required>
+                            <option value="">Select a State</option>
+                            <option value="AL">Alabama</option>
+                            <option value="AK">Alaska</option>
+                            <option value="AZ">Arizona</option>
+                            <option value="AR">Arkansas</option>
+                            <option value="CA">California</option>
+                            <option value="CO">Colorado</option>
+                            <option value="CT">Connecticut</option>
+                            <option value="DE">Delaware</option>
+                            <option value="FL">Florida</option>
+                            <option value="GA">Georgia</option>
+                            <option value="HI">Hawaii</option>
+                            <option value="ID">Idaho</option>
+                            <option value="IL">Illinois</option>
+                            <option value="IN">Indiana</option>
+                            <option value="IA">Iowa</option>
+                            <option value="KS">Kansas</option>
+                            <option value="KY">Kentucky</option>
+                            <option value="LA">Louisiana</option>
+                            <option value="ME">Maine</option>
+                            <option value="MD">Maryland</option>
+                            <option value="MA">Massachusetts</option>
+                            <option value="MI">Michigan</option>
+                            <option value="MN">Minnesota</option>
+                            <option value="MS">Mississippi</option>
+                            <option value="MO">Missouri</option>
+                            <option value="MT">Montana</option>
+                            <option value="NE">Nebraska</option>
+                            <option value="NV">Nevada</option>
+                            <option value="NH">New Hampshire</option>
+                            <option value="NJ">New Jersey</option>
+                            <option value="NM">New Mexico</option>
+                            <option value="NY">New York</option>
+                            <option value="NC">North Carolina</option>
+                            <option value="ND">North Dakota</option>
+                            <option value="OH">Ohio</option>
+                            <option value="OK">Oklahoma</option>
+                            <option value="OR">Oregon</option>
+                            <option value="PA">Pennsylvania</option>
+                            <option value="RI">Rhode Island</option>
+                            <option value="SC">South Carolina</option>
+                            <option value="SD">South Dakota</option>
+                            <option value="TN">Tennessee</option>
+                            <option value="TX">Texas</option>
+                            <option value="UT">Utah</option>
+                            <option value="VT">Vermont</option>
+                            <option value="VA">Virginia</option>
+                            <option value="WA">Washington</option>
+                            <option value="WV">West Virginia</option>
+                            <option value="WI">Wisconsin</option>
+                            <option value="WY">Wyoming</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="form-group row mb-5">
+                        <div class="col-md-6">
+                          <label for="shippingEmail" class="text-black">Email Address <span class="text-danger">*</span></label>
+                          <input type="email" class="form-control" id="shippingEmail" name="shippingEmail" placeholder="example@example.com">
+                        </div>
+                        <div class="col-md-6">
+                          <label for="shippingPhone" class="text-black">Phone <span class="text-danger">*</span></label>
+                          <input type="text" class="form-control" id="shippingPhone" name="shippingPhone" pattern="^\+1\d{10}$" placeholder="+11234567890">
+                        </div>
+                      </div>
+                  </div>
+                </div>
+              </div>
+
+              <script>
+                const checkbox = document.getElementById("c_ship_different_address");
+                const shippingDiv = document.getElementById("ship_different_address");
+
+                checkbox.addEventListener("change", function() {
+                  if (this.checked) {
+                    shippingDiv.classList.add("show");
+                  } else {
+                    shippingDiv.classList.remove("show");
+                  }
+                });
+              </script>
+    
+              <div class="form-group">
+                <label for="customerOrderNotes" class="text-black">Order Notes</label>
+                <textarea name="customerOrderNotes" id="customerOrderNotes" cols="30" rows="5" class="form-control"
+                  placeholder="Write your notes here..."></textarea>
+              </div>
+    
+            </div>
+          </div>
+          <div class="col-md-6">
+    
+            <div class="row mb-5">
+              <div class="col-md-12">
+                <h2 class="h3 mb-3 text-black">Coupon Code</h2>
+                <div class="p-3 p-lg-5 border">
+    
+                  <label for="c_code" class="text-black mb-3">Enter your coupon code if you have one</label>
+                  <div class="input-group w-75">
+                    <input type="text" class="form-control" id="c_code" placeholder="Coupon Code" aria-label="Coupon Code"
+                      aria-describedby="button-addon2">
+                    <div class="input-group-append">
+                      <button class="btn btn-primary btn-sm px-4" type="button" id="button-addon2">Apply</button>
+                    </div>
+                  </div>
+    
+                </div>
+              </div>
+            </div>
+    
+            <div class="row mb-5">
+              <div class="col-md-12">
+                <h2 class="h3 mb-3 text-black">Your Order</h2>
+                <div class="p-3 p-lg-5 border">
+                  <table class="table site-block-order-table mb-5">
+                    <thead>
+                      <th>Product</th>
+                      <th>Total</th>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Bioderma <strong class="mx-2">x</strong> 1</td>
+                        <td>$55.00</td>
+                      </tr>
+                      <tr>
+                        <td>Ibuprofeen <strong class="mx-2">x</strong> 1</td>
+                        <td>$45.00</td>
+                      </tr>
+                      <tr>
+                        <td class="text-black font-weight-bold"><strong>Cart Subtotal</strong></td>
+                        <td class="text-black">$350.00</td>
+                      </tr>
+                      <tr>
+                        <td class="text-black font-weight-bold"><strong>Order Total</strong></td>
+                        <td class="text-black font-weight-bold"><strong>$350.00</strong></td>
+                      </tr>
+                    </tbody>
+                  </table>
+    
+                  <!-- <div class="border mb-3">
+                    <h3 class="h6 mb-0"><a class="d-block" data-toggle="collapse" href="#collapsebank" role="button"
+                        aria-expanded="false" aria-controls="collapsebank">Direct Bank Transfer</a></h3>
+    
+                    <div class="collapse" id="collapsebank">
+                      <div class="py-2 px-4">
+                        <p class="mb-0">Make your payment directly into our bank account. Please use your Order ID as the
+                          payment reference. Your order won’t be shipped until the funds have cleared in our account.</p>
+                      </div>
+                    </div>
+                  </div>
+    
+                  <div class="border mb-3">
+                    <h3 class="h6 mb-0"><a class="d-block" data-toggle="collapse" href="#collapsecheque" role="button"
+                        aria-expanded="false" aria-controls="collapsecheque">Cheque Payment</a></h3>
+    
+                    <div class="collapse" id="collapsecheque">
+                      <div class="py-2 px-4">
+                        <p class="mb-0">Make your payment directly into our bank account. Please use your Order ID as the
+                          payment reference. Your order won’t be shipped until the funds have cleared in our account.</p>
+                      </div>
+                    </div>
+                  </div>
+    
+                  <div class="border mb-5">
+                    <h3 class="h6 mb-0"><a class="d-block" data-toggle="collapse" href="#collapsepaypal" role="button"
+                        aria-expanded="false" aria-controls="collapsepaypal">Paypal</a></h3>
+    
+                    <div class="collapse" id="collapsepaypal">
+                      <div class="py-2 px-4">
+                        <p class="mb-0">Make your payment directly into our bank account. Please use your Order ID as the
+                          payment reference. Your order won’t be shipped until the funds have cleared in our account.</p>
+                      </div>
+                    </div>
+                  </div> -->
+
+                  <h2 class="h3 mb-3 text-black">Card Details</h2>
+
+                  <div class="p-3 p-lg-5 border mb-5">
+
+                    <div class="form-group row">
+                      <div class="col-md-12" style="position:relative;">
+                        <img
+                          id="cardBrandIcon"
+                          src="/images/card-default.svg"
+                          style="
+                            position:absolute;
+                            top:50%;
+                            left:20px;
+                            transform:translateY(-50%);
+                            height:24px;
+                            width:7%;
+                            display:block;
+                            pointer-events:none;
+                            opacity:0.6;
+                          "
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="cardNo"
+                          name="cardNo"
+                          placeholder="1234 5678 9012 3456"
+                          maxlength="19"
+                          autocomplete="cc-number"
+                          style="padding-left:40px;"
+                        >
+                      </div>   
+                    </div>
+
+                    <div class="form-group row">
+                      <div class="col-md-6">
+                        <label for="cardExpMonth" class="text-black">
+                          Expiry Month <span class="text-danger">*</span>
+                        </label>
+                        <select
+                          class="form-control"
+                          id="cardExpMonth"
+                          name="cardExpMonth"
+                          autocomplete="cc-exp-month"
+                        >
+                          <option value="">MM</option>
+                          <option value="01">01</option>
+                          <option value="02">02</option>
+                          <option value="03">03</option>
+                          <option value="04">04</option>
+                          <option value="05">05</option>
+                          <option value="06">06</option>
+                          <option value="07">07</option>
+                          <option value="08">08</option>
+                          <option value="09">09</option>
+                          <option value="10">10</option>
+                          <option value="11">11</option>
+                          <option value="12">12</option>
+                        </select>
+                      </div>
+                      
+                      <div class="col-md-6">
+                        <label for="cardExpYear" class="text-black">
+                          Expiry Year <span class="text-danger">*</span>
+                        </label>
+                        <select
+                          class="form-control"
+                          id="cardExpYear"
+                          name="cardExpYear"
+                          autocomplete="cc-exp-year"
+                        >
+                          <option value="">YYYY</option>
+                          <option value="2026">2026</option>
+                          <option value="2027">2027</option>
+                          <option value="2028">2028</option>
+                          <option value="2029">2029</option>
+                          <option value="2030">2030</option>
+                          <option value="2031">2031</option>
+                          <option value="2032">2032</option>
+                          <option value="2033">2033</option>
+                          <option value="2034">2034</option>
+                          <option value="2035">2035</option>
+                          <option value="2036">2036</option>
+                          <option value="2037">2037</option>
+                          <option value="2038">2038</option>
+                          <option value="2039">2039</option>
+                          <option value="2040">2040</option>
+                        </select>
+                      </div>
+
+
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-md-12">
+                        <label for="cardCVV" class="text-black">
+                          CVV <span class="text-danger">*</span>
+                        </label>
+                        <input
+                          type="password"
+                          inputmode="numeric"
+                          class="form-control"
+                          id="cardCVV"
+                          name="cardCVV"
+                          placeholder="3 or 4 digits"
+                          minlength="3"
+                          maxlength="4"
+                          autocomplete="cc-csc"
+                        >
+                      </div>
+                    </div>
+                  </div>
+
+                  <button id="placeOrderBtn" type="button" class="btn btn-primary btn-lg btn-block" disabled>
+                    Place Order
+                  </button>
+
+                  <script type="module">
+import { v4 as uuidv4 } from 'https://cdn.jsdelivr.net/npm/uuid@9.0.0/dist/esm-browser/index.js';
+
+document.addEventListener("DOMContentLoaded", async function () {
+
+    // ---------------------------
+    // 1️⃣ Cart Table Populate
+    // ---------------------------
+    const orderTableBody = document.querySelector(".site-block-order-table tbody");
+    if (!orderTableBody) return;
+
+    const cart = JSON.parse(localStorage.getItem("cart")) || {};
+    if (Object.keys(cart).length === 0) {
+        orderTableBody.innerHTML = `<tr><td colspan="2">Your cart is empty.</td></tr>`;
+    } else {
+        let products = [];
+        try {
+            const res = await fetch("/api/products");
+            const json = await res.json();
+            if (json.success && Array.isArray(json.data)) products = json.data;
+        } catch(err) { console.error("Failed to fetch products:", err); }
+
+        const productMap = {};
+        products.forEach(p => productMap[p.slug] = p);
+
+        orderTableBody.innerHTML = "";
+        let subtotal = 0;
+
+        Object.keys(cart).forEach(key => {
+            const item = cart[key];
+            const product = productMap[key];
+            const imageSrc = product?.image || "images/product_07_large.png";
+            const total = item.price * item.qty;
+            subtotal += total;
+
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td style="display:flex;align-items:center;">
+                    <img src="${imageSrc}" alt="${item.title}" style="width:50px;height:50px;object-fit:cover;margin-right:10px;">
+                    ${item.title} <strong class="mx-2">x</strong> ${item.qty}
+                </td>
+                <td>$${total.toFixed(2)}</td>
+            `;
+            orderTableBody.appendChild(tr);
+        });
+
+        const subtotalRow = document.createElement("tr");
+        subtotalRow.innerHTML = `
+            <td class="text-black font-weight-bold"><strong>Cart Subtotal</strong></td>
+            <td class="text-black">$${subtotal.toFixed(2)}</td>
+        `;
+        orderTableBody.appendChild(subtotalRow);
+
+        const totalRow = document.createElement("tr");
+        totalRow.innerHTML = `
+            <td class="text-black font-weight-bold"><strong>Order Total</strong></td>
+            <td class="text-black font-weight-bold"><strong>$${subtotal.toFixed(2)}</strong></td>
+        `;
+        orderTableBody.appendChild(totalRow);
+    }
+
+    // ---------------------------
+    // 2️⃣ Partial Lead Pre-fill
+    // ---------------------------
+    let leadToken = localStorage.getItem("leadToken"); 
+    if (!leadToken) {
+        leadToken = uuidv4();
+        localStorage.setItem("leadToken", leadToken);
+    }
+
+    try {
+        const res = await fetch(`/api/lead/${leadToken}`);
+        const json = await res.json();
+        if (res.ok && json.success && json.data) {
+            const lead = json.data;
+
+            // Billing
+            document.getElementById("billingFirstName").value = lead.billingFirstName || "";
+            document.getElementById("billingLastName").value = lead.billingLastName || "";
+            document.getElementById("billingAddress").value = lead.billingAddress || "";
+            document.getElementById("billingPostalCode").value = lead.billingPostalCode || "";
+            document.getElementById("billingCity").value = lead.billingCity || "";
+            document.getElementById("billingState").value = lead.billingState || "";
+            document.getElementById("billingEmail").value = lead.billingEmail || "";
+            document.getElementById("billingPhone").value = lead.billingPhone || "";
+
+            // Shipping
+            if (lead.shipToDifferentAddress) {
+                document.getElementById("c_ship_different_address").checked = true;
+                document.getElementById("ship_different_address").classList.add("show");
+
+                document.getElementById("shippingFirstName").value = lead.shippingFirstName || "";
+                document.getElementById("shippingLastName").value = lead.shippingLastName || "";
+                document.getElementById("shippingAddress").value = lead.shippingAddress || "";
+                document.getElementById("shippingPostalCode").value = lead.shippingPostalCode || "";
+                document.getElementById("shippingCity").value = lead.shippingCity || "";
+                document.getElementById("shippingState").value = lead.shippingState || "";
+                document.getElementById("shippingEmail").value = lead.shippingEmail || "";
+                document.getElementById("shippingPhone").value = lead.shippingPhone || "";
+            }
+
+            if (typeof validateForm === "function") validateForm();
+        }
+    } catch(err) { console.error("Failed to fetch partial lead:", err); }
+
+    // ---------------------------
+    // 3️⃣ Ship Checkbox Toggle
+    // ---------------------------
+    const checkbox = document.getElementById("c_ship_different_address");
+    const shippingDiv = document.getElementById("ship_different_address");
+    checkbox.addEventListener("change", function() {
+        shippingDiv.classList.toggle("show", this.checked);
+        validateForm();
+        savePartialDebounced(); // auto-save partial whenever checkbox toggled
+    });
+
+    // ---------------------------
+    // 4️⃣ ZIP & Phone Setup
+    // ---------------------------
+    const phoneInputs = [document.getElementById("billingPhone"), document.getElementById("shippingPhone")];
+    const zipInputs = [document.getElementById("billingPostalCode"), document.getElementById("shippingPostalCode")];
+
+    phoneInputs.forEach(input => {
+        if (!input) return;
+        input.setAttribute("maxlength","12");
+        input.setAttribute("minlength","12");
+        input.setAttribute("pattern","^\\+1[0-9]{10}$");
+        input.addEventListener("input", savePartialDebounced);
+    });
+
+    zipInputs.forEach(input => {
+        if (!input) return;
+        input.setAttribute("maxlength","5");
+        input.setAttribute("minlength","5");
+        input.setAttribute("pattern","^\\d{5}$");
+        input.addEventListener("input", savePartialDebounced);
+    });
+
+    function setupZipAutoFill(zipInputId, cityInputId, stateInputId, spinnerId) {
+        const zipInput = document.getElementById(zipInputId);
+        const cityInput = document.getElementById(cityInputId);
+        const stateInput = document.getElementById(stateInputId);
+        const spinner = document.getElementById(spinnerId);
+        if (!zipInput || !cityInput || !stateInput) return;
+
+        let debounceTimeout, retryCount = 0;
+
+        zipInput.addEventListener("input", () => {
+            const zip = zipInput.value.trim();
+            if (zip.length !== 5) { cityInput.value=""; stateInput.value=""; retryCount=0; if(spinner) spinner.style.display="none"; return; }
+
+            clearTimeout(debounceTimeout);
+            debounceTimeout = setTimeout(async () => {
+                if (retryCount >= 2) return;
+                if(spinner) spinner.style.display="inline-block";
+
+                try {
+                    const res = await fetch(`/api/zip/${zip}`);
+                    const data = await res.json();
+                    if (res.ok && data?.success && data?.data?.places?.length>0) {
+                        const place = data.data.places[0];
+                        cityInput.value = place["place name"] || "";
+                        stateInput.value = place["state abbreviation"] || "";
+                        retryCount = 0;
+                        savePartialDebounced(); // auto-save after ZIP autofill
+                    } else retryCount++;
+                } catch(err){ retryCount++; }
+                finally { if(spinner) spinner.style.display="none"; }
+            }, 300);
+        });
+    }
+
+    setupZipAutoFill("billingPostalCode", "billingCity", "billingState", "billingZipSpinner");
+    setupZipAutoFill("shippingPostalCode", "shippingCity", "shippingState", "shippingZipSpinner");
+
+    // ---------------------------
+    // 5️⃣ Card & Form Validation
+    // ---------------------------
+    const cardInput = document.getElementById("cardNo");
+    const cvvInput = document.getElementById("cardCVV");
+    const monthSelect = document.getElementById("cardExpMonth");
+    const yearSelect = document.getElementById("cardExpYear");
+    const submitBtn = document.getElementById("placeOrderBtn");
+    const brandIcon = document.getElementById("cardBrandIcon");
+
+    const CARD_BRANDS = [
+        {name:"visa", regex:/^4/, lengths:[16], cvv:3},
+        {name:"mastercard", regex:/^5[1-5]/, lengths:[16], cvv:3},
+        {name:"amex", regex:/^3[47]/, lengths:[15], cvv:4},
+        {name:"discover", regex:/^6(?:011|5)/, lengths:[16], cvv:3},
+        {name:"jcb", regex:/^35/, lengths:[16], cvv:3},
+        {name:"unionpay", regex:/^62/, lengths:[16,17,18,19], cvv:3},
+        {name:"dc", regex:/^3(?:0|6|8)/, lengths:[14], cvv:3}
+    ];
+
+    function luhnCheck(num) {
+        let sum=0, double=false;
+        for(let i=num.length-1;i>=0;i--){
+            let d=parseInt(num[i],10);
+            if(double){ d*=2; if(d>9)d-=9; }
+            sum+=d; double=!double;
+        }
+        return sum%10===0;
+    }
+
+    function detectCard(number){ return CARD_BRANDS.find(b=>b.regex.test(number)); }
+    function markInvalid(el){ el?.classList.add("border-danger"); }
+    function markValid(el){ el?.classList.remove("border-danger"); }
+
+    function validateForm() {
+        let valid = true;
+        const numberRaw = cardInput.value.replace(/\s/g,"");
+        const brand = detectCard(numberRaw);
+        if (!brand || !brand.lengths.includes(numberRaw.length) || !luhnCheck(numberRaw)) { markInvalid(cardInput); valid=false; } else markValid(cardInput);
+        if (!brand || cvvInput.value.length!==brand.cvv){ markInvalid(cvvInput); valid=false; } else markValid(cvvInput);
+
+        const now=new Date();
+        const expYear=parseInt(yearSelect.value,10);
+        const expMonth=parseInt(monthSelect.value,10);
+        if(!expYear || !expMonth || expYear<now.getFullYear() || (expYear===now.getFullYear() && expMonth<now.getMonth()+1)){ markInvalid(monthSelect); markInvalid(yearSelect); valid=false; } else { markValid(monthSelect); markValid(yearSelect); }
+
+        const bp=document.getElementById("billingPhone").value;
+        const bz=document.getElementById("billingPostalCode").value;
+        if(!/^\+1\d{10}$/.test(bp)){ markInvalid(document.getElementById("billingPhone")); valid=false; } else markValid(document.getElementById("billingPhone"));
+        if(!/^\d{5}$/.test(bz)){ markInvalid(document.getElementById("billingPostalCode")); valid=false; } else markValid(document.getElementById("billingPostalCode"));
+
+        if(document.getElementById("c_ship_different_address").checked){
+            const sp=document.getElementById("shippingPhone").value;
+            const sz=document.getElementById("shippingPostalCode").value;
+            if(!/^\+1\d{10}$/.test(sp)){ markInvalid(document.getElementById("shippingPhone")); valid=false; } else markValid(document.getElementById("shippingPhone"));
+            if(!/^\d{5}$/.test(sz)){ markInvalid(document.getElementById("shippingPostalCode")); valid=false; } else markValid(document.getElementById("shippingPostalCode"));
+        }
+
+        submitBtn.disabled = !valid;
+    }
+
+    [cardInput, cvvInput, monthSelect, yearSelect, ...phoneInputs, ...zipInputs].forEach(el=>{
+        if(el?.tagName==="SELECT") el.addEventListener("change",()=>{ validateForm(); savePartialDebounced(); });
+        else if(el) el.addEventListener("input", savePartialDebounced);
+    });
+
+    cardInput.addEventListener("input", ()=>{
+        let value=cardInput.value.replace(/\D/g,"");
+        value=value.match(/.{1,4}/g)?.join(" ")||"";
+        cardInput.value=value;
+        const digits=value.replace(/\s/g,"");
+        const brand=detectCard(digits);
+        if(brand){ brandIcon.src=`/images/${brand.name}.svg`; brandIcon.style.opacity="1"; cvvInput.maxLength=brand.cvv; } 
+        else { brandIcon.src="/images/card-default.svg"; brandIcon.style.opacity="0.6"; cvvInput.maxLength=4; }
+        validateForm();
+    });
+
+    // ---------------------------
+    // 6️⃣ Partial Save Function (Debounced)
+    // ---------------------------
+    async function savePartial() {
+
+         const email = document.getElementById("billingEmail").value.trim();
+        const phone = document.getElementById("billingPhone").value.trim();
+
+        // Stop partial if email or phone incomplete
+        if (!/^\S+@\S+\.\S+$/.test(email) || !/^\+1\d{10}$/.test(phone)) {
+            return; // ❌ Don't call API
+        }
+
+        const payload = {
+            lead_token: localStorage.getItem("leadToken"),
+            billingFirstName: document.getElementById("billingFirstName").value.trim(),
+            billingLastName: document.getElementById("billingLastName").value.trim(),
+            billingCountry: document.getElementById("billingCountry").value.trim(),
+            billingAddress: document.getElementById("billingAddress").value.trim(),
+            billingPostalCode: document.getElementById("billingPostalCode").value.trim(),
+            billingCity: document.getElementById("billingCity").value.trim(),
+            billingState: document.getElementById("billingState").value.trim(),
+            billingEmail: document.getElementById("billingEmail").value.trim(),
+            billingPhone: document.getElementById("billingPhone").value.trim(),
+            shipToDifferentAddress: document.getElementById("c_ship_different_address").checked,
+            shippingFirstName: document.getElementById("shippingFirstName").value.trim(),
+            shippingLastName: document.getElementById("shippingLastName").value.trim(),
+            shippingCountry: document.getElementById("shippingCountry").value.trim(),
+            shippingAddress: document.getElementById("shippingAddress").value.trim(),
+            shippingPostalCode: document.getElementById("shippingPostalCode").value.trim(),
+            shippingCity: document.getElementById("shippingCity").value.trim(),
+            shippingState: document.getElementById("shippingState").value.trim(),
+            shippingEmail: document.getElementById("shippingEmail").value.trim(),
+            shippingPhone: document.getElementById("shippingPhone").value.trim(),
+            is_partial: true
+        };
+
+        try {
+            const res = await fetch("/api/partials", {
+                method:"POST",
+                headers:{"Content-Type":"application/json"},
+                body:JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (res.ok && data?.leadToken) {
+                localStorage.setItem("leadToken", data.leadToken);
+            }
+        } catch(err){ console.error("Failed to save partial lead:", err); }
+    }
+
+    let partialSaveTimeout;
+    function savePartialDebounced() {
+        clearTimeout(partialSaveTimeout);
+        partialSaveTimeout = setTimeout(savePartial, 3000);
+    }
+
+    // ---------------------------
+    // 7️⃣ Place Order Submit
+    // ---------------------------
+    submitBtn.addEventListener("click", async e=>{
+        e.preventDefault();
+        if(submitBtn.disabled) return;
+
+        await savePartial(); // ensure latest partial saved
+
+        const payload = {
+            lead_token: localStorage.getItem("leadToken"),
+            billingFirstName: document.getElementById("billingFirstName").value.trim(),
+            billingLastName: document.getElementById("billingLastName").value.trim(),
+            billingCountry: document.getElementById("billingCountry").value.trim(),
+            billingAddress: document.getElementById("billingAddress").value.trim(),
+            billingPostalCode: document.getElementById("billingPostalCode").value.trim(),
+            billingCity: document.getElementById("billingCity").value.trim(),
+            billingState: document.getElementById("billingState").value.trim(),
+            billingEmail: document.getElementById("billingEmail").value.trim(),
+            billingPhone: document.getElementById("billingPhone").value.trim(),
+            shipToDifferentAddress: document.getElementById("c_ship_different_address").checked,
+            shippingFirstName: document.getElementById("shippingFirstName").value.trim(),
+            shippingLastName: document.getElementById("shippingLastName").value.trim(),
+            shippingCountry: document.getElementById("shippingCountry").value.trim(),
+            shippingAddress: document.getElementById("shippingAddress").value.trim(),
+            shippingPostalCode: document.getElementById("shippingPostalCode").value.trim(),
+            shippingCity: document.getElementById("shippingCity").value.trim(),
+            shippingState: document.getElementById("shippingState").value.trim(),
+            shippingEmail: document.getElementById("shippingEmail").value.trim(),
+            shippingPhone: document.getElementById("shippingPhone").value.trim(),
+            cardNo: cardInput.value.replace(/\s/g,""),
+            cardExpMonth: monthSelect.value,
+            cardExpYear: yearSelect.value,
+            cardCVV: cvvInput.value,
+            is_paid: true
+        };
+
+        submitBtn.disabled = true;
+
+        function showCartMessage(boxId, message){
+            const box=document.getElementById(boxId);
+            if(!box) return;
+            box.textContent=message;
+            box.style.display="block";
+            box.style.opacity="1";
+            setTimeout(()=>{ box.style.display="none"; box.style.opacity="0"; },3000);
+        }
+
+        try {
+            const res = await fetch("/api/checkout",{
+                method:"POST",
+                headers:{"Content-Type":"application/json"},
+                body:JSON.stringify(payload)
+            });
+
+            const data = await res.json();
+            if(res.ok){ showCartMessage("cart-success-box", data?.message || "Order placed successfully!"); }
+            else{ showCartMessage("cart-remove-box", data?.error || "Checkout failed. Check your details."); }
+
+        } catch(err){ showCartMessage("cart-remove-box","Network error. Try again."); }
+        finally{ submitBtn.disabled=false; }
+    });
+
+});
+</script>
+
+                  
+                  <!-- <div class="form-group">
+                    <button class="btn btn-primary btn-lg btn-block" onclick="window.location='thankyou.html'">Place
+                      Order</button>
+                  </div> -->
+    
+                </div>
+              </div>
+            </div>
+    
+          </div>
+        </div>
+        <!-- </form> -->
+      </div>
+    </div>
+    
+    <%- include('partials/footer.ejs') %>
+
+  </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", async function () {
+  // Hide Returning Customer & Coupon Code sections
+  const returningDiv = document.querySelector(".site-section .row.mb-5 .col-md-12 .bg-light");
+  const couponDiv = [...document.querySelectorAll(".row.mb-5 .col-md-12")].find(el => 
+    el.querySelector("h2")?.textContent.includes("Coupon Code")
+  );
+  if (returningDiv) returningDiv.style.display = "none";
+  if (couponDiv) couponDiv.style.display = "none";
+
+  const orderTableBody = document.querySelector(".site-block-order-table tbody");
+  if (!orderTableBody) return;
+
+  // Get cart from localStorage
+  const cart = JSON.parse(localStorage.getItem("cart")) || {};
+  if (Object.keys(cart).length === 0) {
+    orderTableBody.innerHTML = `<tr><td colspan="2">Your cart is empty.</td></tr>`;
+    return;
+  }
+
+  // Fetch all products from backend
+  let products = [];
+  try {
+    const res = await fetch("/api/products");
+    const json = await res.json();
+    if (json.success && Array.isArray(json.data)) products = json.data;
+  } catch (err) {
+    console.error("Failed to fetch products:", err);
+  }
+
+  // Map products by slug for easy lookup
+  const productMap = {};
+  products.forEach(p => productMap[p.slug] = p);
+
+  orderTableBody.innerHTML = "";
+  let subtotal = 0;
+
+  // Populate order table
+  Object.keys(cart).forEach(key => {
+    const item = cart[key];           // cart item
+    const product = productMap[key];  // backend product matching slug (cart key)
+
+    const imageSrc = product?.image || "images/product_07_large.png"; // fallback
+    const total = item.price * item.qty;
+    subtotal += total;
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td style="display: flex; align-items: center;">
+        <img src="${imageSrc}" alt="${item.title}" style="width:50px; height:50px; object-fit:cover; margin-right:10px;">
+        ${item.title} <strong class="mx-2">x</strong> ${item.qty}
+      </td>
+      <td>$${total.toFixed(2)}</td>
+    `;
+    orderTableBody.appendChild(tr);
+  });
+
+  // Subtotal row
+  const subtotalRow = document.createElement("tr");
+  subtotalRow.innerHTML = `
+    <td class="text-black font-weight-bold"><strong>Cart Subtotal</strong></td>
+    <td class="text-black">$${subtotal.toFixed(2)}</td>
+  `;
+  orderTableBody.appendChild(subtotalRow);
+
+  // Total row
+  const totalRow = document.createElement("tr");
+  totalRow.innerHTML = `
+    <td class="text-black font-weight-bold"><strong>Order Total</strong></td>
+    <td class="text-black font-weight-bold"><strong>$${subtotal.toFixed(2)}</strong></td>
+  `;
+  orderTableBody.appendChild(totalRow);
+});
+</script>
+
+
+  <%- include('partials/scripts.ejs') %>
+
+</body>
+
+</html>
