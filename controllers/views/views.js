@@ -104,6 +104,7 @@ module.exports =
   aboutController:       renderPage('about', 'About', 200),
   cartController:        renderPage('cart', 'Cart', 200),
   checkoutController:    renderPage('checkout2', 'Checkout', 200),
+  thankyouController:    renderPage('thank-you', 'Thankyou', 200),
 
   controller404:         renderPage('404', '404', 404),
   controller500:         renderPage('500', '500', 500),

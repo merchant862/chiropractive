@@ -1,6 +1,4 @@
 require('dotenv').config();
-
-//-------------------------------------------
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -14,60 +12,41 @@ const { xPoweredByHeaders, serverHeaders } = require('../utils/responseHeaders.j
 
 const app = express();
 
-//-------------------------------------------
 // View engine
 app.set('views', path.join(__dirname, '..', 'views'));
 app.set('view engine', 'ejs');
 
-//-------------------------------------------
 // Middleware
-app.use(logger(process.env.NODE_ENV === 'development' ? 'dev' : 'combined'));
-
-// Body parsing
+app.use(logger(process.env.NODE_ENV === 'development' ? 'dev' : 'tiny'));
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: false, limit: '1mb' }));
-
-// Cookies
 app.use(cookieParser());
 
-// Security headers
+// Security
 //app.use(helmet());
 
-// Optional: custom headers
+// Custom headers
 app.use(serverHeaders);
 app.use(xPoweredByHeaders);
 
-// Compression
-app.use(compression());
+// Compression (Brotli fallback)
+app.use(compression({ level: 9 }));
 
-//-------------------------------------------
-// Static files with cache
-const oneDay = 96 * 60 * 60 * 1000; // 1 day
-app.use('/', express.static(path.join(__dirname, '..', 'public'), { maxAge: oneDay }));
-app.use('/shop', express.static(path.join(__dirname, '..', 'public'), { maxAge: oneDay }));
+// Static files with caching
+const oneWeek = 7 * 24 * 60 * 60 * 1000;
+app.use('/', express.static(path.join(__dirname, '..', 'public'), { maxAge: oneWeek }));
+app.use('/shop', express.static(path.join(__dirname, '..', 'public'), { maxAge: oneWeek }));
 
-//-------------------------------------------
 // CORS
 app.use(cors({ origin: true, credentials: true }));
-/* if (process.env.NODE_ENV === 'development') {
-    app.use(cors({ origin: true, credentials: true }));
-} else {
-    // Production: restrict origin to your domain
-    app.use(cors({ origin: ['https://yourdomain.com'], credentials: true }));
-} */
 
-//-------------------------------------------
 // Routes
 app.use('/', router);
 
-//-------------------------------------------
 // 404 handler
 app.use((req, res, next) => {
     res.status(404);
-    // If API request, return JSON
-    if (req.originalUrl.startsWith('/api/')) {
-        return res.json({ error: 'Route not found' });
-    }
+    if (req.originalUrl.startsWith('/api/')) return res.json({ error: 'Route not found' });
     res.redirect('/404');
 });
 
@@ -75,11 +54,8 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
     console.error(err);
     res.status(500);
-    if (req.originalUrl.startsWith('/api/')) {
-        return res.json({ error: 'Internal server error' });
-    }
+    if (req.originalUrl.startsWith('/api/')) return res.json({ error: 'Internal server error' });
     res.redirect('/500');
 });
 
-//-------------------------------------------
 module.exports = app;

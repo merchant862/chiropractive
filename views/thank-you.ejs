@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title><%= SITE_TITLE %> - <%= PAGE_NAME %></title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <%- include('partials/head.ejs') %>
+
+</head>
+
+<body>
+
+  <%- include('partials/shipping_slider.ejs') %>
+
+  <div class="site-wrap">
+    
+    <%- include('partials/navbar.ejs') %>
+
+    <%- include('partials/mini_navbar.ejs') %>
+
+    <div class="site-section">
+  <div class="container">
+
+    <!-- SUCCESS HEADER -->
+    <div class="row mb-5">
+      <div class="col-md-12 text-center">
+
+        <span class="icon-check_circle display-3" style="color:#75b239;"></span>
+
+        <h2 class="display-4 text-black mt-3">
+          Thank You For Your Order!
+        </h2>
+
+        <p class="lead mt-3" style="max-width:650px;margin:0 auto;color:#666;">
+          Your order has been successfully placed. 
+          Our team is now preparing it for shipment. 
+          You will receive a confirmation call shortly.
+        </p>
+
+      </div>
+    </div>
+
+    <!-- ORDER + TRUST SECTION -->
+    <div class="row">
+
+      <!-- ORDER SUMMARY -->
+      <div class="col-lg-8 mb-5">
+
+        <div style="padding:25px; border:1px solid #eee; border-radius:8px;">
+
+          <h4 class="mb-4" style="font-weight:600;">Order Summary</h4>
+
+          <table class="table site-block-order-table mb-0">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th class="text-right">Total</th>
+              </tr>
+            </thead>
+            <tbody id="thankyou-order-summary">
+              <!-- JS will inject cart items here -->
+            </tbody>
+          </table>
+
+        </div>
+
+      </div>
+
+      <!-- ORDER INFO + TRUST -->
+      <div class="col-lg-4">
+
+        <div style="padding:25px; border:1px solid #eee; border-radius:8px; background:#f8f9fa;">
+
+          <h5 style="font-weight:600;">What Happens Next?</h5>
+
+          <ul style="list-style:none;padding-left:0;font-size:14px;color:#555;margin-top:15px;">
+            <li style="margin-bottom:8px;">✔ Order confirmation call within 24 hours</li>
+            <li style="margin-bottom:8px;">✔ Fast & Free US Shipping</li>
+            <li style="margin-bottom:8px;">✔ Tracking details shared via SMS/Email</li>
+            <li>✔ 30-Day Risk-Free Money Back Guarantee</li>
+          </ul>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- CTA -->
+    <div class="row mt-5">
+      <div class="col-md-12 text-center">
+        <a href="/" class="btn btn-md height-auto px-5 py-3 btn-primary">
+          Continue Shopping
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+    <%- include('partials/footer.ejs') %>
+  </div>
+
+  <%- include('partials/scripts.ejs') %>
+
+  <script>
+document.addEventListener("DOMContentLoaded", function(){
+
+  const cart = JSON.parse(localStorage.getItem("cart")) || {};
+  const tbody = document.getElementById("thankyou-order-summary");
+
+  let subtotal = 0;
+
+  Object.values(cart).forEach(item => {
+
+    const row = document.createElement("tr");
+
+    const total = item.price * item.quantity;
+    subtotal += total;
+
+    row.innerHTML = `
+      <td>
+        ${item.name} 
+        <strong class="mx-2">x</strong> ${item.quantity}
+      </td>
+      <td class="text-right">$${total.toFixed(2)}</td>
+    `;
+
+    tbody.appendChild(row);
+
+  });
+
+  // Subtotal Row
+  const subtotalRow = document.createElement("tr");
+  subtotalRow.innerHTML = `
+    <td class="text-black font-weight-bold"><strong>Order Total</strong></td>
+    <td class="text-black font-weight-bold text-right">
+      <strong>$${subtotal.toFixed(2)}</strong>
+    </td>
+  `;
+  tbody.appendChild(subtotalRow);
+
+  // Optional: Clear cart after showing
+  localStorage.removeItem("cart");
+
+});
+</script>
+
+
+</body>
+
+</html>

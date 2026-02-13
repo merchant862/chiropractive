@@ -17,6 +17,7 @@ router.get('/shop/:product', views.shopSingleController);
 router.get('/about',         views.aboutController);
 router.get('/cart',          views.cartController);
 router.get('/checkout',      views.checkoutController);
+router.get('/thankyou',      views.thankyouController);
 
 router.get('/404', views.controller404);
 router.get('/500', views.controller500);

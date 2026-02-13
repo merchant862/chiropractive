@@ -87,87 +87,49 @@
     
     <script>
 document.addEventListener("DOMContentLoaded", async function() {
-
-  const recommendedSection = document.getElementById("recommended-section");
-  const recommendedContainer = document.getElementById("recommended-products");
+  const container = document.getElementById("recommended-products");
   const cart = JSON.parse(localStorage.getItem("cart")) || {};
 
   try {
     const res = await fetch("/api/products");
-    if (!res.ok) return;
-    const response = await res.json();
-    const products = response.data;
+    if(!res.ok) return;
+    const products = (await res.json()).data.filter(p => !cart[p.slug]);
 
-    const productsToShow = products.filter(product => !cart[product.slug]);
-
-    if (productsToShow.length === 0) {
-      recommendedSection.style.display = "none";
-      return;
-    }
-
-    productsToShow.forEach(product => {
+    products.forEach(p => {
       const col = document.createElement("div");
-      col.className = "col-sm-6 col-md-4 col-lg-3 mb-4";
+      col.className="col-sm-6 col-md-4 col-lg-3 mb-4";
+      const discountHTML = (p.oldPrice && p.oldPrice>p.newPrice) 
+        ? `<span style="font-size:18px;color:#dc3545;font-weight:600;margin-left:6px;">(${Math.round((p.oldPrice-p.newPrice)/p.oldPrice*100)}% Off)</span>` 
+        : '';
 
-      let discountHTML = '';
-      if(product.oldPrice && product.oldPrice > product.newPrice) {
-        const discount = Math.round(((product.oldPrice - product.newPrice) / product.oldPrice) * 100);
-        discountHTML = `<span style="font-size:13px; color:#dc3545; font-weight:600; margin-left:6px;">(${discount}% Off)</span>`;
-      }
-
-      col.innerHTML = `
-        <div class="block-4 text-center border p-2 h-100" style="
-          display:flex; 
-          flex-direction:column; 
-          justify-content:space-between; 
-          height:100%;
-        ">
-          <a href="/shop/${product.slug}">
-            <img src="${product.image}" alt="${product.name}" class="img-fluid" style="height:150px; object-fit:contain;">
+      col.innerHTML=`
+        <div class="block-4 text-center border p-2 h-100 d-flex flex-column" style="height:100%;">
+          <a href="/shop/${p.slug}">
+            <img src="${p.image}" alt="${p.name}" class="img-fluid" style="height:150px; object-fit:contain;" loading="lazy">
           </a>
-          <div class="text mt-2" style="flex-grow:1; display:flex; flex-direction:column; justify-content:space-between;">
-            <h3 class="h6" style="margin-bottom:8px;"><a href="/shop/${product.slug}" class="text-black">${product.name}</a></h3>
+          <div class="text mt-2 flex-grow-1 d-flex flex-column justify-content-between">
+            <h3 class="h6" style="margin-bottom:auto;"><a href="/shop/${p.slug}" class="text-black">${p.name}</a></h3>
             <p class="mb-0">
-              ${product.oldPrice && product.oldPrice > product.newPrice 
-                ? `<span style="text-decoration:line-through; color:#777; margin-left:4px;">$${product.oldPrice.toFixed(2)}</span>` 
-                : ''}
+              ${p.oldPrice && p.oldPrice>p.newPrice ? `<span style="text-decoration:line-through;color:#777;">$${p.oldPrice.toFixed(2)}</span>`:''}
               ${discountHTML}
-              <span class="text-primary">$${product.newPrice.toFixed(2)}</span>
+              <span class="text-primary">$${p.newPrice.toFixed(2)}</span>
             </p>
           </div>
         </div>
       `;
-
-      recommendedContainer.appendChild(col);
+      container.appendChild(col);
     });
 
-    // Equalize card heights
-    function setEqualCardHeights() {
-      const cards = recommendedContainer.querySelectorAll(".block-4");
-      let maxHeight = 0;
+    // Equal height using JS
+    const blocks = container.querySelectorAll('.block-4');
+    let maxHeight = 0;
+    blocks.forEach(b=>maxHeight=Math.max(maxHeight,b.offsetHeight));
+    blocks.forEach(b=>b.style.height=maxHeight+'px');
 
-      // Reset first
-      cards.forEach(card => card.style.height = 'auto');
-
-      // Calculate max
-      cards.forEach(card => {
-        const h = card.offsetHeight;
-        if (h > maxHeight) maxHeight = h;
-      });
-
-      // Apply max height
-      cards.forEach(card => card.style.height = maxHeight + "px");
-    }
-
-    setEqualCardHeights();
-    window.addEventListener('resize', setEqualCardHeights);
-
-  } catch (err) {
-    console.error("Failed to fetch recommended products:", err);
-  }
-
+  } catch(err){ console.error(err); }
 });
 </script>
+
 
     <!-- <script>
       document.addEventListener("DOMContentLoaded", async function() {
