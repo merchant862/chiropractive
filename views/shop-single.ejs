@@ -14,6 +14,7 @@
 
 <body>
 
+  <%- include('partials/shipping_slider.ejs') %>
   <div id="cart-success-box">Added to cart successfully!</div>
   <div id="cart-remove-box">Removed from cart successfully!</div>
 
@@ -51,9 +52,29 @@
             <p><%= product.desc %></p>
 
             <!-- PRICE -->
-            <p><del>$<%= product.oldPrice %>.00</del>
+             <p style="position:relative;">
+  <% if (product.oldPrice && product.oldPrice > product.newPrice) { 
+       let discount = Math.round(((product.oldPrice - product.newPrice) / product.oldPrice) * 100);
+  %>
+    <!-- <del>$<%= product.oldPrice %>.00</del> -->
+    <span style="
+      font-size:18px;
+      color:#dc3545;
+      font-weight:600;
+      margin-left:6px;
+    ">
+      (<%= discount %>% Off)
+    </span>
+  <% } else if(product.oldPrice) { %>
+    <del>$<%= product.oldPrice %>.00</del>
+  <% } %>
+
+  <strong class="text-primary h4">$<%= product.newPrice %>.00</strong>
+</p>
+
+            <!-- <p><del>$<%= product.oldPrice %>.00</del>
               <strong class="text-primary h4">$<%= product.newPrice %>.00</strong>
-            </p>
+            </p> -->
 
             <!-- QUANTITY -->
             <div class="mb-5">

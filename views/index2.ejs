@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title><%= SITE_TITLE %> - <%= PAGE_NAME %></title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <%- include('partials/head.ejs') %>
+</head>
+
+<body>
+
+  <%- include('partials/shipping_slider.ejs') %>
+  <div class="site-wrap">
+    
+  <%- include('partials/navbar.ejs') %>
+
+  <!-- HERO SLIDER -->
+  <div class="owl-carousel owl-single px-0">
+
+    <div class="site-blocks-cover overlay" style="background-image: url('images/pilates-class-equipment-bench.jpg');">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 mx-auto align-self-center">
+            <div class="site-block-cover-content text-center">
+              <h1 class="mb-0">
+                Smart <strong class="text-primary">Spine & Posture Support</strong>
+              </h1>
+
+              <div class="row justify-content-center mb-5">
+                <div class="col-lg-7 text-center">
+                  <p>
+                    Carefully selected posture and spine support products to help reduce daily discomfort,
+                    improve alignment, and support a healthier lifestyle.
+                  </p>
+                </div>
+              </div>
+
+              <p>
+                <a href="#products-wrap" class="btn btn-primary px-5 py-3">
+                  View Support Products
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="site-blocks-cover overlay" style="background-image: url('images/medium-shot-physiotherapist-helping-patient.jpg');">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 mx-auto align-self-center">
+            <div class="site-block-cover-content text-center">
+              <h1 class="mb-0">
+                Get Guidance Before You Buy
+              </h1>
+              <div class="row justify-content-center mb-5">
+                <div class="col-lg-7 text-center">
+                  <p>
+                    Not sure which product is right for you?  
+                    Call us for basic posture and product guidance to help you make an informed choice.
+                  </p>
+                </div>
+              </div>
+              <p>
+                <a href="mailto:support@pharmative.pk" class="btn btn-primary px-5 py-3">
+                  Talk to Us
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FEATURES -->
+  <div class="site-section py-5">
+    <div class="container">
+      <div class="row">
+
+        <div class="col-lg-4">
+          <div class="feature">
+            <span class="wrap-icon flaticon-24-hours-drugs-delivery"></span>
+            <h3><a href="#">Posture Support Products</a></h3>
+            <p>
+              Products designed to support the neck, back, and spine during daily activities and rest.
+            </p>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="feature">
+            <span class="wrap-icon flaticon-medicine"></span>
+            <h3><a href="#">Non-Medical Guidance</a></h3>
+            <p>
+              We provide product-related guidance only and do not offer medical diagnosis or treatment.
+            </p>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="feature">
+            <span class="wrap-icon flaticon-test-tubes"></span>
+            <h3><a href="#">Everyday Spine Care</a></h3>
+            <p>
+              Support your posture at work, during travel, and while resting with the right tools.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCTS -->
+  <div class="site-section bg-light">
+    <div class="container">
+      <div class="row">
+        <div class="title-section text-center col-12">
+          <h2>Posture & <strong class="text-primary">Spine Support Products</strong></h2>
+        </div>
+      </div>
+
+      <div class="row">
+  <div class="col-md-12 block-3 products-wrap" id="products-wrap">
+    <div class="nonloop-block-3 owl-carousel">
+
+      <% if (PRODUCTS && PRODUCTS.length > 0) { %>
+        <% PRODUCTS.forEach(product => { 
+             let discount = 0;
+             if(product.oldPrice && product.oldPrice > product.newPrice){
+               discount = Math.round(((product.oldPrice - product.newPrice) / product.oldPrice) * 100);
+             }
+        %>
+
+          <div class="text-center item mb-4 item-v2">
+            <a href="/shop/<%= product.slug %>">
+              <img src="<%= product.image %>" alt="<%= product.name %>">
+            </a>
+
+            <h3 class="text-dark">
+              <a href="/shop/<%= product.slug %>"><%= product.name %></a>
+            </h3>
+
+            <p class="price" style="position:relative;">
+
+              <% if (product.oldPrice) { %>
+                <!-- <del>$<%= product.oldPrice %></del> -->
+                <% if(discount > 0){ %>
+                  <span style="
+                    font-size:18px;
+                    color:#dc3545;
+                    font-weight:600;
+                    margin-left:6px;
+                  ">
+                    (<%= discount %>% Off)
+                  </span>
+                <% } %>
+              <% } %>
+
+              <span>$<%= product.newPrice %></span>
+            </p>
+          </div>
+
+        <% }) %>
+      <% } else { %>
+        <p class="text-center">Products coming soon</p>
+      <% } %>
+
+    </div>
+  </div>
+</div>
+
+      
+      <!-- <div class="row">
+        <div class="col-md-12 block-3 products-wrap" id="products-wrap">
+          <div class="nonloop-block-3 owl-carousel">
+
+            <% if (PRODUCTS && PRODUCTS.length > 0) { %>
+              <% PRODUCTS.forEach(product => { %>
+                
+
+                <div class="text-center item mb-4 item-v2">
+                  <a href="/shop/<%= product.slug %>">
+                    <img src="<%= product.image %>" alt="<%= product.name %>">
+                  </a>
+
+                  <h4 class="text-dark">
+                    <a href="/shop/<%= product.slug %>"><%= product.name %></a>
+                  </h4>
+
+                  <p class="price">
+                    <% if (product.oldPrice) { %>
+                      <del>$<%= product.oldPrice %></del>
+                    <% } %>
+                    <span>$<%= product.newPrice %></span>
+                  </p>
+                </div>
+
+              <% }) %>
+            <% } else { %>
+              <p class="text-center">Products coming soon</p>
+            <% } %>
+
+          </div>
+        </div>
+      </div> -->
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="site-section bg-image overlay" style="background-image: url('images/hero_bg_2.jpg');">
+    <div class="container">
+      <div class="row justify-content-center text-center">
+        <div class="col-lg-7">
+          <h3 class="text-white">
+            Need Help Choosing the Right Product?
+          </h3>
+          <p class="text-white">
+            Call us for basic guidance on posture support products before making a purchase.
+          </p>
+          <p class="mb-0">
+            <a href="mailto:support@pharmative.pk" class="btn btn-outline-white">
+              Get Product Guidance
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+ <!-- TRUST SECTION -->
+<div class="site-section bg-light">
+  <div class="container">
+
+    <!-- TRUST HEADER -->
+    <div class="row justify-content-center text-center mb-4">
+      <div class="col-lg-8">
+        <h2 class="mb-2">
+          Customer Rated <strong class="text-primary">4.8 out of 5</strong>
+        </h2>
+        <p class="mb-1">
+          Based on 1,274 verified customer orders across the United States.
+        </p>
+        <small class="text-muted">
+          Reviews reflect individual experiences. Results may vary depending on usage and personal preference.
+        </small>
+      </div>
+    </div>
+
+    <!-- REVIEW SLIDER -->
+    <div class="owl-single no-direction owl-carousel">
+
+      <% const reviews = [
+        {name:"Michael R.", city:"Chicago, IL", text:"I spend long hours at my desk and this lumbar cushion makes sitting feel more supportive during the day."},
+        {name:"Jennifer L.", city:"Austin, TX", text:"The neck pillow feels well-constructed and comfortable. It fits nicely with my regular sleeping routine."},
+        {name:"David M.", city:"Phoenix, AZ", text:"I use it in my car for long drives. The build quality feels solid and reliable."},
+        {name:"Emily S.", city:"Seattle, WA", text:"Simple and practical design. It does exactly what I expected from a posture support product."},
+        {name:"Kevin T.", city:"New York, NY", text:"Breathable material and comfortable for everyday use while working from home."},
+        {name:"Amanda C.", city:"Denver, CO", text:"Shipping was on time and packaging was neat. The posture corrector feels lightweight and easy to wear."},
+        {name:"Brian W.", city:"Atlanta, GA", text:"Compared to others I’ve tried, this one feels more stable and thoughtfully designed."},
+        {name:"Rachel P.", city:"San Diego, CA", text:"Good value for the price. It helps me stay more mindful of my posture during long office hours."}
+      ]; %>
+
+      <% reviews.forEach(review => { %>
+
+        <div class="testimony text-center p-4 bg-white rounded shadow-sm">
+
+          <!-- Star Rating -->
+          <div class="mb-2" style="color:#f4b400; font-size:18px;">
+            ★★★★★
+          </div>
+
+          <!-- Review Text -->
+          <blockquote class="mb-3">
+            <p class="mb-0">
+              &ldquo;<%= review.text %>&rdquo;
+            </p>
+          </blockquote>
+
+          <!-- Author -->
+          <p class="mb-1" style="font-size:14px;">
+            <strong><%= review.name %></strong>, <%= review.city %>
+          </p>
+
+          <!-- Verified Badge -->
+          <span style="
+            display:inline-block;
+            background:#e9f7ef;
+            color:#1d7a3a;
+            font-size:11px;
+            padding:4px 12px;
+            border-radius:20px;
+            font-weight:500;
+          ">
+            ✔ Verified Purchase
+          </span>
+
+        </div>
+
+      <% }) %>
+
+    </div>
+
+  </div>
+</div>
+
+
+
+  <%- include('partials/footer.ejs') %>
+
+</div>
+
+<%- include('partials/scripts.ejs') %>
+
+
+</body>
+</html>

@@ -6,3 +6,105 @@
 <script src="js/jquery.magnific-popup.min.js"></script>
 <script src="js/aos.js"></script>
 <script src="js/main.js"></script>
+
+<script>
+  let countdownTime = 2 * 60 * 60; // 2 hours
+
+  function updateTimer() {
+    let hours = Math.floor(countdownTime / 3600);
+    let minutes = Math.floor((countdownTime % 3600) / 60);
+    let seconds = countdownTime % 60;
+
+    document.getElementById("hours").textContent =
+      String(hours).padStart(2, '0');
+    document.getElementById("minutes").textContent =
+      String(minutes).padStart(2, '0');
+    document.getElementById("seconds").textContent =
+      String(seconds).padStart(2, '0');
+
+    if (countdownTime > 0) {
+      countdownTime--;
+    }
+  }
+
+  setInterval(updateTimer, 1000);
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+  // Data
+  const names = ["James","Olivia","William","Emma","Liam","Sophia","Noah","Ava","Lucas","Mia"];
+  const states = ["CA","TX","FL","NY","IL","AZ","GA","NC","WA","CO"];
+  const products = [
+    <% if (PRODUCTS && PRODUCTS.length > 0) { %>
+      <% PRODUCTS.forEach(p => { %>
+        "<%= p.name %>",
+      <% }) %>
+    <% } else { %>
+      "Orthopedic Cervical Pillow",  
+      "Lumbar Support Cushion",
+      "Cervical Pillow",
+      "Posture Corrector Belt"
+    <% } %>
+  ];
+
+  const reviewSnippets = [
+    "Love this product, exactly what I needed.",
+    "Very useful and high quality.",
+    "Arrived quickly, works perfectly.",
+    "Good value for money.",
+    "Helps me with daily posture.",
+    "Comfortable and easy to use."
+  ];
+
+  // Helpers
+  function randomItem(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+  function randomMinutes(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+  // Show Live Purchase
+  function showPurchase(){
+    const name = randomItem(names);
+    const state = randomItem(states);
+    const product = randomItem(products);
+    const minutes = randomMinutes(5,30);
+
+    document.getElementById("popup-text").innerText =
+      name + " from " + state + " purchased " + product + " • " + minutes + " mins ago";
+
+    const popup = document.getElementById("live-popup");
+    popup.style.display = "block";
+    setTimeout(()=>{ popup.style.opacity=1; popup.style.transform="translateY(0)"; }, 50);
+
+    setTimeout(()=> {
+      popup.style.opacity=0;
+      popup.style.transform="translateY(30px)";
+      setTimeout(()=> popup.style.display="none", 500);
+    }, 5000);
+  }
+
+  // Show Live Review
+  function showReview(){
+    const name = randomItem(names);
+    const snippet = randomItem(reviewSnippets);
+    const stars = "★★★★★";
+
+    document.getElementById("review-text").innerText = name + ": " + snippet;
+    document.getElementById("review-stars").innerText = stars;
+
+    const popup = document.getElementById("review-popup");
+    popup.style.display = "block";
+    setTimeout(()=>{ popup.style.opacity=1; popup.style.transform="translateY(0)"; }, 50);
+
+    setTimeout(()=> {
+      popup.style.opacity=0;
+      popup.style.transform="translateY(30px)";
+      setTimeout(()=> popup.style.display="none", 500);
+    }, 7000);
+  }
+
+  // Interval timings staggered
+  setInterval(showPurchase, 8000);
+  setInterval(showReview, 10000);
+});
+</script>

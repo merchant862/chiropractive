@@ -64,7 +64,7 @@ const renderPage = (view, pageName, statusCode) =>
     {
       let PRODUCTS = null;
 
-      if (view === 'index') PRODUCTS = await getAllProducts();
+      if (view === 'index2') PRODUCTS = await getAllProducts();
 
       if (req.path.startsWith('/shop'))
       {
@@ -99,7 +99,7 @@ const renderPage = (view, pageName, statusCode) =>
 
 module.exports =
 {
-  indexController:       renderPage('index', 'Home', 200),
+  indexController:       renderPage('index2', 'Home', 200),
   shopSingleController:  renderPage('shop-single', 'Shop', 200),
   aboutController:       renderPage('about', 'About', 200),
   cartController:        renderPage('cart', 'Cart', 200),

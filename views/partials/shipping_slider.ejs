@@ -1,0 +1,47 @@
+<!-- FREE SHIPPING FIXED TOP SLIDER -->
+<div id="free-shipping-slider" style="
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  background:#75b239;
+  color:#fff;
+  font-weight:700;
+  font-family: inherit;
+  font-size:18px;
+  text-align:center;
+  padding:6px 0;
+  z-index:9999;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  white-space:nowrap;
+  overflow:hidden;
+">
+  <div id="free-shipping-text" style="
+    display:inline-block;
+    padding-left:100%;
+    animation:slideText 25s linear infinite;
+  ">
+    🚚 FREE SHIPPING on all US orders! &nbsp;&nbsp; | &nbsp;&nbsp; Order now and get it delivered fast!
+  </div>
+</div>
+
+<!-- Inline keyframes for sliding text -->
+<style>
+@keyframes slideText {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-100%); }
+}
+</style>
+
+<!-- Add padding to body so content doesn't go under slider -->
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+  // Detect slider height
+  const slider = document.getElementById('free-shipping-slider');
+  const sliderHeight = slider.offsetHeight;
+  // Add padding-top to body/site-wrap
+  document.body.style.paddingTop = sliderHeight + "px";
+});
+</script>

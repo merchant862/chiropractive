@@ -1,3 +1,66 @@
+<!-- Live Purchase Popup -->
+<div id="live-popup" style="
+  position:fixed;
+  bottom:25px;
+  left:25px;
+  background:#fff;
+  box-shadow:0 8px 25px rgba(0,0,0,0.15);
+  border-radius:10px;
+  padding:14px 16px;
+  max-width:320px;
+  display:none;
+  z-index:9999;
+  font-size:14px;
+  opacity:0;
+  transform: translateY(30px);
+  transition: all 0.5s ease;
+">
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <strong style="font-size:13px;color:#75b239;">Recent Order</strong>
+    <span onclick="document.getElementById('live-popup').style.display='none'"
+      style="cursor:pointer;font-size:16px;">×</span>
+  </div>
+  <p id="popup-text" style="
+    margin:6px 0 0 0;
+    font-size:14px;
+    color:#75b239;
+    font-weight:600;
+    line-height:1.4;
+  "></p>
+</div>
+
+<!-- Live Review Widget -->
+<div id="review-popup" style="
+  position:fixed;
+  bottom:25px;
+  right:25px;
+  background:#75b239;
+  color:#fff;
+  box-shadow:0 8px 25px rgba(0,0,0,0.15);
+  border-radius:10px;
+  padding:14px 16px;
+  max-width:320px;
+  display:none;
+  z-index:9999;
+  font-size:14px;
+  opacity:0;
+  transform: translateY(30px);
+  transition: all 0.5s ease;
+">
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <strong style="font-size:13px;">Customer Review</strong>
+    <span onclick="document.getElementById('review-popup').style.display='none'"
+      style="cursor:pointer;font-size:16px;">×</span>
+  </div>
+  <p id="review-text" style="
+    margin:6px 0 0 0;
+    font-size:14px;
+    font-weight:600;
+    line-height:1.4;
+  "></p>
+  <div id="review-stars" style="color:#f4b400; font-size:16px; margin-top:4px;"></div>
+</div>
+
 <footer class="site-footer bg-light">
   <div class="container">
     <div class="row">

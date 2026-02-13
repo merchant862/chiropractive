@@ -14,6 +14,7 @@
 
 <body>
 
+  <%- include('partials/shipping_slider.ejs') %>
   <div class="site-wrap">
 
     <%- include('partials/navbar.ejs') %>
@@ -59,7 +60,6 @@
             </div>
           </div>
         </div>
-
         <div class="row justify-content-end">
           <div class="col-md-6">
             <h3 class="text-black h4 text-uppercase border-bottom pb-3 mb-3">Cart Totals</h3>
@@ -86,6 +86,65 @@
     </div>
     
     <script>
+document.addEventListener("DOMContentLoaded", async function() {
+
+  const recommendedSection = document.getElementById("recommended-section");
+  const recommendedContainer = document.getElementById("recommended-products");
+  const cart = JSON.parse(localStorage.getItem("cart")) || {};
+
+  try {
+    const res = await fetch("/api/products");
+    if (!res.ok) return;
+    const response = await res.json();
+    const products = response.data;
+
+    // Filter products not in cart
+    const productsToShow = products.filter(product => !cart[product.slug]);
+
+    // If all products are in cart, hide the section
+    if (productsToShow.length === 0) {
+      recommendedSection.style.display = "none";
+      return;
+    }
+
+    productsToShow.forEach(product => {
+      const col = document.createElement("div");
+      col.className = "col-sm-6 col-md-4 col-lg-3 mb-4";
+
+      // Calculate discount percentage if applicable
+      let discountHTML = '';
+      if(product.oldPrice && product.oldPrice > product.newPrice) {
+        const discount = Math.round(((product.oldPrice - product.newPrice) / product.oldPrice) * 100);
+        discountHTML = `<span style="font-size:18px; color:#dc3545; font-weight:600; margin-left:6px;">(${discount}% Off)</span>`;
+      }
+
+      col.innerHTML = `
+        <div class="block-4 text-center border p-2 h-100">
+          <a href="/shop/${product.slug}">
+            <img src="${product.image}" alt="${product.name}" class="img-fluid" style="height:150px; object-fit:contain;">
+          </a>
+          <div class="text mt-2">
+            <h3 class="h6"><a href="/shop/${product.slug}" class="text-black">${product.name}</a></h3>
+            <p class="mb-0">
+              ${discountHTML}
+              <span class="text-primary">$${product.newPrice.toFixed(2)}</span>
+            </p>
+          </div>
+        </div>
+      `;
+
+      recommendedContainer.appendChild(col);
+    });
+
+  } catch (err) {
+    console.error("Failed to fetch recommended products:", err);
+  }
+
+});
+</script>
+
+
+    <!-- <script>
       document.addEventListener("DOMContentLoaded", async function() {
 
         const recommendedSection = document.getElementById("recommended-section");
@@ -136,7 +195,7 @@
         }
 
       });
-      </script>
+      </script> -->
 
     <%- include('partials/footer.ejs') %>
   </div>
