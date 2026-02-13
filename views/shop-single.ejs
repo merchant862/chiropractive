@@ -38,11 +38,28 @@
         }; %>
 
         <div class="row">
-          <div class="col-md-5 mr-auto">
+          <!-- <div class="col-md-5 mr-auto">
             <div class="border text-center">
               <img src="<%= product.image %>" alt="Image" class="img-fluid p-5">
             </div>
-          </div>
+          </div> -->
+          <div class="col-md-5 mr-auto">
+  <div class="border text-center" style="overflow:hidden; cursor:zoom-in; position:relative;">
+    <img src="<%= product.image %>" 
+         alt="Image" 
+         class="img-fluid p-5" 
+         style="transition: transform 0.2s ease; transform-origin: center center;"
+         onmousemove="const rect=this.getBoundingClientRect();
+                      const x=event.clientX-rect.left;
+                      const y=event.clientY-rect.top;
+                      const xPercent = x / rect.width * 100;
+                      const yPercent = y / rect.height * 100;
+                      this.style.transformOrigin = xPercent+'% '+yPercent+'%';
+                      this.style.transform='scale(1.8)';"
+         onmouseleave="this.style.transform='scale(1)'; this.style.transformOrigin='center center';">
+  </div>
+</div>
+
 
           <div class="col-md-6">
             <!-- PRODUCT NAME -->
@@ -56,7 +73,7 @@
   <% if (product.oldPrice && product.oldPrice > product.newPrice) { 
        let discount = Math.round(((product.oldPrice - product.newPrice) / product.oldPrice) * 100);
   %>
-    <!-- <del>$<%= product.oldPrice %>.00</del> -->
+    <del>$<%= product.oldPrice %></del>
     <span style="
       font-size:18px;
       color:#dc3545;
@@ -66,7 +83,7 @@
       (<%= discount %>% Off)
     </span>
   <% } else if(product.oldPrice) { %>
-    <del>$<%= product.oldPrice %>.00</del>
+    <del>$<%= product.oldPrice %></del>
   <% } %>
 
   <strong class="text-primary h4">$<%= product.newPrice %>.00</strong>
@@ -90,7 +107,21 @@
             </div>
 
             <!-- BUTTONS -->
-            <div class="row gx-2">
+             <div class="row gx-2">
+  <div class="col-sm-4" style="margin-bottom:8px;">
+    <button class="buy-now btn btn-sm height-auto px-4 py-3 btn-primary">Add To Cart</button>
+  </div>
+  <div class="col-sm-4" style="margin-bottom:8px;">
+    <button class="remove-from-cart btn btn-sm height-auto px-4 py-3"
+            style="background: transparent; border: 1px solid #ccc; color: #75b239; border-radius: 0.25rem; display: flex; align-items: center; justify-content: center; transition: all 0.3s;"
+            onmouseover="this.style.color='#fff'; this.style.background='#dc3545'; this.style.border='1px solid #dc3545';"
+            onmouseout="this.style.color='#555'; this.style.background='transparent'; this.style.border='1px solid #ccc';">
+      Remove From Cart
+    </button>
+  </div>
+</div>
+
+            <!-- <div class="row gx-2">
               <div class="col-sm-4">
                 <button class="buy-now btn btn-sm height-auto px-4 py-3 btn-primary">Add To Cart</button>
               </div>
@@ -102,7 +133,7 @@
                   Remove From Cart
                 </button>
               </div>
-            </div>
+            </div> -->
 
             <!-- TABBED INFO -->
             <div class="mt-5">

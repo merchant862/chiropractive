@@ -98,10 +98,8 @@ document.addEventListener("DOMContentLoaded", async function() {
     const response = await res.json();
     const products = response.data;
 
-    // Filter products not in cart
     const productsToShow = products.filter(product => !cart[product.slug]);
 
-    // If all products are in cart, hide the section
     if (productsToShow.length === 0) {
       recommendedSection.style.display = "none";
       return;
@@ -111,21 +109,28 @@ document.addEventListener("DOMContentLoaded", async function() {
       const col = document.createElement("div");
       col.className = "col-sm-6 col-md-4 col-lg-3 mb-4";
 
-      // Calculate discount percentage if applicable
       let discountHTML = '';
       if(product.oldPrice && product.oldPrice > product.newPrice) {
         const discount = Math.round(((product.oldPrice - product.newPrice) / product.oldPrice) * 100);
-        discountHTML = `<span style="font-size:18px; color:#dc3545; font-weight:600; margin-left:6px;">(${discount}% Off)</span>`;
+        discountHTML = `<span style="font-size:13px; color:#dc3545; font-weight:600; margin-left:6px;">(${discount}% Off)</span>`;
       }
 
       col.innerHTML = `
-        <div class="block-4 text-center border p-2 h-100">
+        <div class="block-4 text-center border p-2 h-100" style="
+          display:flex; 
+          flex-direction:column; 
+          justify-content:space-between; 
+          height:100%;
+        ">
           <a href="/shop/${product.slug}">
             <img src="${product.image}" alt="${product.name}" class="img-fluid" style="height:150px; object-fit:contain;">
           </a>
-          <div class="text mt-2">
-            <h3 class="h6"><a href="/shop/${product.slug}" class="text-black">${product.name}</a></h3>
+          <div class="text mt-2" style="flex-grow:1; display:flex; flex-direction:column; justify-content:space-between;">
+            <h3 class="h6" style="margin-bottom:8px;"><a href="/shop/${product.slug}" class="text-black">${product.name}</a></h3>
             <p class="mb-0">
+              ${product.oldPrice && product.oldPrice > product.newPrice 
+                ? `<span style="text-decoration:line-through; color:#777; margin-left:4px;">$${product.oldPrice.toFixed(2)}</span>` 
+                : ''}
               ${discountHTML}
               <span class="text-primary">$${product.newPrice.toFixed(2)}</span>
             </p>
@@ -136,13 +141,33 @@ document.addEventListener("DOMContentLoaded", async function() {
       recommendedContainer.appendChild(col);
     });
 
+    // Equalize card heights
+    function setEqualCardHeights() {
+      const cards = recommendedContainer.querySelectorAll(".block-4");
+      let maxHeight = 0;
+
+      // Reset first
+      cards.forEach(card => card.style.height = 'auto');
+
+      // Calculate max
+      cards.forEach(card => {
+        const h = card.offsetHeight;
+        if (h > maxHeight) maxHeight = h;
+      });
+
+      // Apply max height
+      cards.forEach(card => card.style.height = maxHeight + "px");
+    }
+
+    setEqualCardHeights();
+    window.addEventListener('resize', setEqualCardHeights);
+
   } catch (err) {
     console.error("Failed to fetch recommended products:", err);
   }
 
 });
 </script>
-
 
     <!-- <script>
       document.addEventListener("DOMContentLoaded", async function() {
