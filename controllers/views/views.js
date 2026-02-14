@@ -81,6 +81,7 @@ const renderPage = (view, pageName, statusCode) =>
         .render(`../views/${view}.ejs`,
         {
           SITE_TITLE: process.env.SITE_TITLE,
+          SUPPORT_EMAIL: process.env.SUPPORT_EMAIL,
           PAGE_NAME: pageName,
           PRODUCT: req.params.product || null,
           PRODUCT_DETAILS: req.params.product
