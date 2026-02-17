@@ -60,28 +60,37 @@
   </div>
 </div>
 
+<% if (product.oldPrice && product.oldPrice > product.newPrice) { 
+       let discount = Math.round(((product.oldPrice - product.newPrice) / product.oldPrice) * 100);
+  %>
 
           <div class="col-md-6">
             <!-- PRODUCT NAME -->
-            <h2 class="text-black"><%= product.name %></h2>
-
-            <!-- DESCRIPTION -->
-            <p><%= product.desc %></p>
-
-            <!-- PRICE -->
-             <p style="position:relative;">
-  <% if (product.oldPrice && product.oldPrice > product.newPrice) { 
-       let discount = Math.round(((product.oldPrice - product.newPrice) / product.oldPrice) * 100);
-  %>
-    <del>$<%= product.oldPrice %></del>
-    <span style="
+            <h2 class="text-black"><%= product.name %>
+            <span style="
       font-size:18px;
       color:#dc3545;
       font-weight:600;
       margin-left:6px;
     ">
       (<%= discount %>% Off)
-    </span>
+    </span></h2>
+
+            <!-- DESCRIPTION -->
+            <p><%= product.desc %></p>
+
+            <!-- PRICE -->
+             <p style="position:relative;">
+  
+    <del>$<%= product.oldPrice %></del>
+    <!-- <span style="
+      font-size:18px;
+      color:#dc3545;
+      font-weight:600;
+      margin-left:6px;
+    ">
+      (<%= discount %>% Off)
+    </span> -->
   <% } else if(product.oldPrice) { %>
     <del>$<%= product.oldPrice %></del>
   <% } %>

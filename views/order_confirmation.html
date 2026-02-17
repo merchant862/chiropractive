@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark">
+
+<title>ChiroSnap Order Confirmation</title>
+
+<style>
+/* MOBILE */
+@media only screen and (max-width:600px){
+  .container{width:100%!important;}
+  .stack{display:block!important;width:100%!important;}
+  .hide-mobile{display:none!important;}
+}
+
+/* APPLE MAIL FORCE DARK */
+:root {
+  color-scheme: light dark;
+  supported-color-schemes: light dark;
+}
+
+/* GMAIL DARK FIX */
+u + .body .email-container {
+  background-color:#ffffff !important;
+}
+u + .body .text-dark {
+  color:#000000 !important;
+}
+
+/* DARK MODE */
+@media (prefers-color-scheme: dark) {
+  body {background:#111!important;}
+  .email-container {background:#1a1a1a!important;}
+  .card {background:#222!important;border-color:#333!important;}
+  .text-dark {color:#fff!important;}
+  .text-muted {color:#bbb!important;}
+  .divider {border-color:#333!important;}
+}
+</style>
+</head>
+
+<body class="body" style="margin:0;padding:0;background:#f4f4f4;font-family:Arial,Helvetica,sans-serif;">
+
+<table width="100%" cellpadding="0" cellspacing="0" style="padding:20px;">
+<tr>
+<td align="center">
+
+<table width="100%" cellpadding="0" cellspacing="0"
+class="container email-container"
+style="max-width:600px;background:#ffffff;border-radius:8px;overflow:hidden;">
+
+<!-- HEADER -->
+<tr>
+<td align="center" style="padding:30px 20px 10px 20px;">
+<div style="font-size:38px;color:#75b239;">✔</div>
+<h2 class="text-dark" style="margin:10px 0 5px;font-weight:600;">
+Thank You For Your Order!
+</h2>
+<p class="text-muted" style="margin:0;font-size:14px;">
+Order ID: <strong>CS-899090909</strong>
+</p>
+</td>
+</tr>
+
+<!-- MESSAGE -->
+<tr>
+<td align="center" style="padding:0 30px 25px 30px;">
+<p class="text-muted" style="font-size:14px;line-height:22px;">
+Your order has been successfully placed and is being prepared for shipment.
+You will receive tracking details shortly.
+</p>
+</td>
+</tr>
+
+<!-- ORDER SUMMARY -->
+<tr>
+<td style="padding:0 20px 20px 20px;">
+
+<table width="100%" cellpadding="0" cellspacing="0"
+class="card"
+style="border:1px solid #eee;border-radius:8px;padding:20px;">
+
+<tr>
+<td class="text-dark" style="font-size:18px;font-weight:600;padding-bottom:15px;">
+Order Summary
+</td>
+</tr>
+
+<tr>
+<td>
+
+<table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+
+<tr class="divider" style="border-bottom:1px solid #eee;">
+<th align="left" class="text-muted" style="padding:10px 0;font-size:13px;">Product</th>
+<th align="right" class="text-muted" style="padding:10px 0;font-size:13px;">Total</th>
+</tr>
+
+<tr class="divider" style="border-bottom:1px solid #eee;">
+<td style="padding:15px 0;">
+<img src="https://picsum.photos/seed/neck/80" width="60"
+style="border-radius:6px;vertical-align:middle;">
+<span class="text-dark" style="margin-left:10px;">
+ChiroSnap Neck Support (Qty:1)
+</span>
+</td>
+<td align="right" class="text-dark">$49.00</td>
+</tr>
+
+<tr class="divider" style="border-bottom:1px solid #eee;">
+<td style="padding:15px 0;">
+<img src="https://picsum.photos/seed/lumbar/80" width="60"
+style="border-radius:6px;vertical-align:middle;">
+<span class="text-dark" style="margin-left:10px;">
+ChiroSnap Lumbar Cushion (Qty:2)
+</span>
+</td>
+<td align="right" class="text-dark">$78.00</td>
+</tr>
+
+<tr>
+<td class="text-dark" style="padding:15px 0;font-weight:bold;">
+Grand Total
+</td>
+<td align="right" class="text-dark" style="font-weight:bold;">
+$127.00
+</td>
+</tr>
+
+</table>
+
+</td>
+</tr>
+</table>
+
+</td>
+</tr>
+
+<!-- SHIPPING + BILLING -->
+<tr>
+<td style="padding:0 20px 20px 20px;">
+
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+
+<!-- SHIPPING -->
+<td class="card stack" width="48%" valign="top"
+style="border:1px solid #eee;border-radius:8px;padding:15px;">
+
+<h4 class="text-dark" style="margin:0 0 10px;font-size:14px;">
+Shipping Address
+</h4>
+
+<p class="text-muted" style="font-size:13px;line-height:20px;margin:0;">
+John Doe<br>
+123 Main Street<br>
+Los Angeles, CA 90001<br>
+United States<br><br>
+<strong>USPS Priority Mail</strong><br>
+Tracking: 9405 5036 9930 0123 4567 89
+</p>
+
+</td>
+
+<td class="hide-mobile" width="4%"></td>
+
+<!-- BILLING + PAYMENT -->
+<td class="card billing-card stack" width="48%" valign="top"
+style="border:1px solid #eee;border-radius:8px;padding:15px;background:#f8f9fa;">
+
+<h4 class="text-dark" style="margin:0 0 10px;font-size:15px;">Billing & Payment</h4>
+
+<p class="text-muted" style="margin:0;font-size:13px;line-height:20px;">
+Payment Method:
+<img src="/images/visa.svg"
+     alt="Visa" width="40" style="vertical-align:middle;margin-right:5px;">
+Visa ending in 4242
+<span style="display:inline-block;
+             background:#75b239;
+             color:#fff;
+             font-size:12px;
+             font-weight:600;
+             padding:2px 6px;
+             border-radius:4px;
+             margin-left:5px;">
+  Paid
+</span>
+<br>
+Subtotal: $127.00<br>
+Shipping: Free<br>
+Total Paid: $127.00
+</p>
+
+</td>
+
+</tr>
+</table>
+
+</td>
+</tr>
+
+<!-- CTA -->
+<tr>
+<td align="center" style="padding:25px;">
+<a href="https://chirosnap.com"
+style="background:#75b239;color:#ffffff;text-decoration:none;
+padding:12px 30px;border-radius:6px;font-size:14px;font-weight:600;display:inline-block;">
+Track Your Order
+</a>
+</td>
+</tr>
+
+<!-- FOOTER -->
+<tr>
+<td align="center" class="text-muted"
+style="padding:20px;font-size:12px;border-top:1px solid #eee;">
+Need help? support@chirosnap.com<br><br>
+© 2026 ChiroSnap. All rights reserved.
+</td>
+</tr>
+
+</table>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>

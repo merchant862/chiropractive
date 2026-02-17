@@ -543,7 +543,402 @@
   🔒 Your payment information is encrypted and secure.
 </p>
 
-                  <script type="module">
+<script type="module">
+import { v4 as uuidv4 } from 'https://cdn.jsdelivr.net/npm/uuid@9.0.0/dist/esm-browser/index.js';
+
+document.addEventListener("DOMContentLoaded", async function () {
+
+    // ---------------------------
+    // 1️⃣ Cart Table Populate
+    // ---------------------------
+    const orderTableBody = document.querySelector(".site-block-order-table tbody");
+    if (!orderTableBody) return;
+
+    const cart = JSON.parse(localStorage.getItem("cart")) || {};
+    if (Object.keys(cart).length === 0) {
+        orderTableBody.innerHTML = `<tr><td colspan="2">Your cart is empty.</td></tr>`;
+    } else {
+        let products = [];
+        try {
+            const res = await fetch("/api/products");
+            const json = await res.json();
+            if (json.success && Array.isArray(json.data)) products = json.data;
+        } catch(err) { console.error("Failed to fetch products:", err); }
+
+        const productMap = {};
+        products.forEach(p => productMap[p.slug] = p);
+
+        orderTableBody.innerHTML = "";
+        let subtotal = 0;
+
+        Object.keys(cart).forEach(key => {
+            const item = cart[key];
+            const product = productMap[key];
+            const imageSrc = product?.image || "images/product_07_large.png";
+            const total = item.price * item.qty;
+            subtotal += total;
+
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td style="display:flex;align-items:center;">
+                    <img src="${imageSrc}" alt="${item.title}" style="width:50px;height:50px;object-fit:cover;margin-right:10px;">
+                    ${item.title} <strong class="mx-2">x</strong> ${item.qty}
+                </td>
+                <td>$${total.toFixed(2)}</td>
+            `;
+            orderTableBody.appendChild(tr);
+        });
+
+        const subtotalRow = document.createElement("tr");
+        subtotalRow.innerHTML = `
+            <td class="text-black font-weight-bold"><strong>Cart Subtotal</strong></td>
+            <td class="text-black">$${subtotal.toFixed(2)}</td>
+        `;
+        orderTableBody.appendChild(subtotalRow);
+
+        const totalRow = document.createElement("tr");
+        totalRow.innerHTML = `
+            <td class="text-black font-weight-bold"><strong>Order Total</strong></td>
+            <td class="text-black font-weight-bold"><strong>$${subtotal.toFixed(2)}</strong></td>
+        `;
+        orderTableBody.appendChild(totalRow);
+    }
+
+    // ---------------------------
+    // 2️⃣ Partial Lead Pre-fill
+    // ---------------------------
+    let leadToken = localStorage.getItem("leadToken"); 
+    if (!leadToken) {
+        leadToken = uuidv4();
+        localStorage.setItem("leadToken", leadToken);
+    }
+
+    try {
+        const res = await fetch(`/api/lead/${leadToken}`);
+        const json = await res.json();
+        if (res.ok && json.success && json.data) {
+            const lead = json.data;
+
+            // Billing
+            document.getElementById("billingFirstName").value = lead.billingFirstName || "";
+            document.getElementById("billingLastName").value = lead.billingLastName || "";
+            document.getElementById("billingAddress").value = lead.billingAddress || "";
+            document.getElementById("billingPostalCode").value = lead.billingPostalCode || "";
+            document.getElementById("billingCity").value = lead.billingCity || "";
+            document.getElementById("billingState").value = lead.billingState || "";
+            document.getElementById("billingEmail").value = lead.billingEmail || "";
+            document.getElementById("billingPhone").value = lead.billingPhone || "";
+
+            // Shipping
+            if (lead.shipToDifferentAddress) {
+                document.getElementById("c_ship_different_address").checked = true;
+                document.getElementById("ship_different_address").classList.add("show");
+
+                document.getElementById("shippingFirstName").value = lead.shippingFirstName || "";
+                document.getElementById("shippingLastName").value = lead.shippingLastName || "";
+                document.getElementById("shippingAddress").value = lead.shippingAddress || "";
+                document.getElementById("shippingPostalCode").value = lead.shippingPostalCode || "";
+                document.getElementById("shippingCity").value = lead.shippingCity || "";
+                document.getElementById("shippingState").value = lead.shippingState || "";
+                document.getElementById("shippingEmail").value = lead.shippingEmail || "";
+                document.getElementById("shippingPhone").value = lead.shippingPhone || "";
+            }
+
+            if (typeof validateForm === "function") validateForm();
+        }
+    } catch(err) { console.error("Failed to fetch partial lead:", err); }
+
+    // ---------------------------
+    // 3️⃣ Ship Checkbox Toggle
+    // ---------------------------
+    const checkbox = document.getElementById("c_ship_different_address");
+    const shippingDiv = document.getElementById("ship_different_address");
+    checkbox.addEventListener("change", function() {
+        shippingDiv.classList.toggle("show", this.checked);
+        validateForm();
+        savePartialDebounced();
+    });
+
+    // ---------------------------
+    // 4️⃣ ZIP & Phone Setup
+    // ---------------------------
+    const phoneInputs = [document.getElementById("billingPhone"), document.getElementById("shippingPhone")];
+    const zipInputs = [document.getElementById("billingPostalCode"), document.getElementById("shippingPostalCode")];
+
+    phoneInputs.forEach(input => {
+        if (!input) return;
+        input.setAttribute("maxlength","12");
+        input.setAttribute("minlength","12");
+        input.setAttribute("pattern","^\\+1[0-9]{10}$");
+        input.addEventListener("input", savePartialDebounced);
+    });
+
+    zipInputs.forEach(input => {
+        if (!input) return;
+        input.setAttribute("maxlength","5");
+        input.setAttribute("minlength","5");
+        input.setAttribute("pattern","^\\d{5}$");
+        input.addEventListener("input", savePartialDebounced);
+    });
+
+    function setupZipAutoFill(zipInputId, cityInputId, stateInputId, spinnerId) {
+        const zipInput = document.getElementById(zipInputId);
+        const cityInput = document.getElementById(cityInputId);
+        const stateInput = document.getElementById(stateInputId);
+        const spinner = document.getElementById(spinnerId);
+        if (!zipInput || !cityInput || !stateInput) return;
+
+        let debounceTimeout, retryCount = 0;
+
+        zipInput.addEventListener("input", () => {
+            const zip = zipInput.value.trim();
+            if (zip.length !== 5) { cityInput.value=""; stateInput.value=""; retryCount=0; if(spinner) spinner.style.display="none"; return; }
+
+            clearTimeout(debounceTimeout);
+            debounceTimeout = setTimeout(async () => {
+                if (retryCount >= 2) return;
+                if(spinner) spinner.style.display="inline-block";
+
+                try {
+                    const res = await fetch(`/api/zip/${zip}`);
+                    const data = await res.json();
+                    if (res.ok && data?.success && data?.data?.places?.length>0) {
+                        const place = data.data.places[0];
+                        cityInput.value = place["place name"] || "";
+                        stateInput.value = place["state abbreviation"] || "";
+                        retryCount = 0;
+                        savePartialDebounced();
+                    } else retryCount++;
+                } catch(err){ retryCount++; }
+                finally { if(spinner) spinner.style.display="none"; }
+            }, 300);
+        });
+    }
+
+    setupZipAutoFill("billingPostalCode", "billingCity", "billingState", "billingZipSpinner");
+    setupZipAutoFill("shippingPostalCode", "shippingCity", "shippingState", "shippingZipSpinner");
+
+    // ---------------------------
+    // 5️⃣ Card & Form Validation
+    // ---------------------------
+    const cardInput = document.getElementById("cardNo");
+    const cvvInput = document.getElementById("cardCVV");
+    const monthSelect = document.getElementById("cardExpMonth");
+    const yearSelect = document.getElementById("cardExpYear");
+    const submitBtn = document.getElementById("placeOrderBtn");
+    const brandIcon = document.getElementById("cardBrandIcon");
+
+    const CARD_BRANDS = [
+        {name:"visa", regex:/^4/, lengths:[16], cvv:3},
+        {name:"mastercard", regex:/^5[1-5]/, lengths:[16], cvv:3},
+        {name:"amex", regex:/^3[47]/, lengths:[15], cvv:4},
+        {name:"discover", regex:/^6(?:011|5)/, lengths:[16], cvv:3},
+        {name:"jcb", regex:/^35/, lengths:[16], cvv:3},
+        {name:"unionpay", regex:/^62/, lengths:[16,17,18,19], cvv:3},
+        {name:"dc", regex:/^3(?:0|6|8)/, lengths:[14], cvv:3}
+    ];
+
+    function luhnCheck(num) {
+        let sum=0, double=false;
+        for(let i=num.length-1;i>=0;i--){
+            let d=parseInt(num[i],10);
+            if(double){ d*=2; if(d>9)d-=9; }
+            sum+=d; double=!double;
+        }
+        return sum%10===0;
+    }
+
+    function detectCard(number){ return CARD_BRANDS.find(b=>b.regex.test(number)); }
+    function markInvalid(el){ el?.classList.add("border-danger"); }
+    function markValid(el){ el?.classList.remove("border-danger"); }
+
+    function validateForm() {
+        let valid = true;
+        const numberRaw = cardInput.value.replace(/\s/g,"");
+        const brand = detectCard(numberRaw);
+
+        // Card number
+        if (!brand || !brand.lengths.includes(numberRaw.length) || !luhnCheck(numberRaw)) { markInvalid(cardInput); valid=false; } 
+        else markValid(cardInput);
+
+        // CVV ONLY if card number valid and complete
+        const cvvValue = cvvInput.value;
+        if (brand && numberRaw.length === brand.lengths[0]) {
+            if (cvvValue.length !== brand.cvv) { markInvalid(cvvInput); valid=false; } 
+            else markValid(cvvInput);
+        } else markValid(cvvInput); // don't mark red while typing
+
+        // Expiry
+        const now = new Date();
+        const expYear = parseInt(yearSelect.value,10);
+        const expMonth = parseInt(monthSelect.value,10);
+        if (!expYear || !expMonth || expYear < now.getFullYear() || (expYear === now.getFullYear() && expMonth < now.getMonth()+1)) {
+            markInvalid(monthSelect); markInvalid(yearSelect); valid=false;
+        } else { markValid(monthSelect); markValid(yearSelect); }
+
+        // Billing phone & ZIP
+        const bp = document.getElementById("billingPhone").value;
+        const bz = document.getElementById("billingPostalCode").value;
+        if(!/^\+1\d{10}$/.test(bp)){ markInvalid(document.getElementById("billingPhone")); valid=false; } else markValid(document.getElementById("billingPhone"));
+        if(!/^\d{5}$/.test(bz)){ markInvalid(document.getElementById("billingPostalCode")); valid=false; } else markValid(document.getElementById("billingPostalCode"));
+
+        // Shipping phone & ZIP
+        if(document.getElementById("c_ship_different_address").checked){
+            const sp=document.getElementById("shippingPhone").value;
+            const sz=document.getElementById("shippingPostalCode").value;
+            if(!/^\+1\d{10}$/.test(sp)){ markInvalid(document.getElementById("shippingPhone")); valid=false; } else markValid(document.getElementById("shippingPhone"));
+            if(!/^\d{5}$/.test(sz)){ markInvalid(document.getElementById("shippingPostalCode")); valid=false; } else markValid(document.getElementById("shippingPostalCode"));
+        }
+
+        submitBtn.disabled = !valid;
+    }
+
+    [cardInput, cvvInput, monthSelect, yearSelect, ...phoneInputs, ...zipInputs].forEach(el=>{
+        if(el?.tagName==="SELECT") el.addEventListener("change",()=>{ validateForm(); savePartialDebounced(); });
+        else if(el) el.addEventListener("input", savePartialDebounced);
+    });
+
+    // Card input formatting + brand detection
+    cardInput.addEventListener("input", ()=>{
+        let value=cardInput.value.replace(/\D/g,"");
+        value=value.match(/.{1,4}/g)?.join(" ")||"";
+        cardInput.value=value;
+        const digits=value.replace(/\s/g,"");
+        const brand=detectCard(digits);
+        if(brand){ brandIcon.src=`/images/${brand.name}.svg`; brandIcon.style.opacity="1"; cvvInput.maxLength=brand.cvv; } 
+        else { brandIcon.src="/images/card-default.svg"; brandIcon.style.opacity="0.6"; cvvInput.maxLength=4; }
+        validateForm();
+    });
+
+    // CVV debounce to avoid premature red border
+    cvvInput.addEventListener("input", () => {
+        clearTimeout(cvvInput._debounce);
+        cvvInput._debounce = setTimeout(validateForm, 200);
+    });
+
+    // ---------------------------
+    // 6️⃣ Partial Save Function (Debounced)
+    // ---------------------------
+    async function savePartial() {
+        const email = document.getElementById("billingEmail").value.trim();
+        const phone = document.getElementById("billingPhone").value.trim();
+        if (!/^\S+@\S+\.\S+$/.test(email) || !/^\+1\d{10}$/.test(phone)) return;
+
+        const payload = {
+            lead_token: localStorage.getItem("leadToken"),
+            billingFirstName: document.getElementById("billingFirstName").value.trim(),
+            billingLastName: document.getElementById("billingLastName").value.trim(),
+            billingCountry: document.getElementById("billingCountry").value.trim(),
+            billingAddress: document.getElementById("billingAddress").value.trim(),
+            billingPostalCode: document.getElementById("billingPostalCode").value.trim(),
+            billingCity: document.getElementById("billingCity").value.trim(),
+            billingState: document.getElementById("billingState").value.trim(),
+            billingEmail: document.getElementById("billingEmail").value.trim(),
+            billingPhone: document.getElementById("billingPhone").value.trim(),
+            shipToDifferentAddress: document.getElementById("c_ship_different_address").checked,
+            shippingFirstName: document.getElementById("shippingFirstName").value.trim(),
+            shippingLastName: document.getElementById("shippingLastName").value.trim(),
+            shippingCountry: document.getElementById("shippingCountry").value.trim(),
+            shippingAddress: document.getElementById("shippingAddress").value.trim(),
+            shippingPostalCode: document.getElementById("shippingPostalCode").value.trim(),
+            shippingCity: document.getElementById("shippingCity").value.trim(),
+            shippingState: document.getElementById("shippingState").value.trim(),
+            shippingEmail: document.getElementById("shippingEmail").value.trim(),
+            shippingPhone: document.getElementById("shippingPhone").value.trim(),
+            is_partial: true,
+            cart: localStorage.getItem("cart")
+        };
+
+        try {
+            const res = await fetch("/api/partials", {
+                method:"POST",
+                headers:{"Content-Type":"application/json"},
+                body:JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (res.ok && data?.leadToken) localStorage.setItem("leadToken", data.leadToken);
+        } catch(err){ console.error("Failed to save partial lead:", err); }
+    }
+
+    let partialSaveTimeout;
+    function savePartialDebounced() {
+        clearTimeout(partialSaveTimeout);
+        partialSaveTimeout = setTimeout(savePartial, 3000);
+    }
+
+    // ---------------------------
+    // 7️⃣ Place Order Submit
+    // ---------------------------
+    submitBtn.addEventListener("click", async e=>{
+        e.preventDefault();
+        if(submitBtn.disabled) return;
+        await savePartial();
+
+        const payload = {
+            lead_token: localStorage.getItem("leadToken"),
+            billingFirstName: document.getElementById("billingFirstName").value.trim(),
+            billingLastName: document.getElementById("billingLastName").value.trim(),
+            billingCountry: document.getElementById("billingCountry").value.trim(),
+            billingAddress: document.getElementById("billingAddress").value.trim(),
+            billingPostalCode: document.getElementById("billingPostalCode").value.trim(),
+            billingCity: document.getElementById("billingCity").value.trim(),
+            billingState: document.getElementById("billingState").value.trim(),
+            billingEmail: document.getElementById("billingEmail").value.trim(),
+            billingPhone: document.getElementById("billingPhone").value.trim(),
+            shipToDifferentAddress: document.getElementById("c_ship_different_address").checked,
+            shippingFirstName: document.getElementById("shippingFirstName").value.trim(),
+            shippingLastName: document.getElementById("shippingLastName").value.trim(),
+            shippingCountry: document.getElementById("shippingCountry").value.trim(),
+            shippingAddress: document.getElementById("shippingAddress").value.trim(),
+            shippingPostalCode: document.getElementById("shippingPostalCode").value.trim(),
+            shippingCity: document.getElementById("shippingCity").value.trim(),
+            shippingState: document.getElementById("shippingState").value.trim(),
+            shippingEmail: document.getElementById("shippingEmail").value.trim(),
+            shippingPhone: document.getElementById("shippingPhone").value.trim(),
+            cardNo: cardInput.value.replace(/\s/g,""),
+            cardExpMonth: monthSelect.value,
+            cardExpYear: yearSelect.value,
+            cardCVV: cvvInput.value,
+            is_paid: true,
+            cart: localStorage.getItem("cart")
+        };
+
+        submitBtn.disabled = true;
+
+        function showCartMessage(boxId, message){
+            const box=document.getElementById(boxId);
+            if(!box) return;
+            box.textContent=message;
+            box.style.display="block";
+            box.style.opacity="1";
+            setTimeout(()=>{ box.style.display="none"; box.style.opacity="0"; },3000);
+        }
+
+        try {
+            const res = await fetch("/api/checkout",{
+                method:"POST",
+                headers:{"Content-Type":"application/json"},
+                body:JSON.stringify(payload)
+            });
+
+            const data = await res.json();
+            if(res.ok){ 
+                localStorage.removeItem("cart"); // <-- ye line add karni hai
+                showCartMessage("cart-success-box", data?.message || "Order placed successfully!");
+                window.location.assign('/thankyou');
+            }
+            else {
+                showCartMessage("cart-remove-box", data?.error || "Checkout failed. Check your details.");
+            }
+
+        } catch(err){ showCartMessage("cart-remove-box","Network error. Try again."); }
+        finally{ submitBtn.disabled=false; }
+    });
+
+});
+</script>
+
+                  <!-- <script type="module">
 import { v4 as uuidv4 } from 'https://cdn.jsdelivr.net/npm/uuid@9.0.0/dist/esm-browser/index.js';
 
 document.addEventListener("DOMContentLoaded", async function () {
@@ -885,7 +1280,8 @@ document.addEventListener("DOMContentLoaded", async function () {
             cardExpMonth: monthSelect.value,
             cardExpYear: yearSelect.value,
             cardCVV: cvvInput.value,
-            is_paid: true
+            is_paid: true,
+            cart: localStorage.getItem("cart") 
         };
 
         submitBtn.disabled = true;
@@ -919,7 +1315,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 
 });
-</script>
+</script> -->
 
                   
                   <!-- <div class="form-group">

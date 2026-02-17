@@ -1,7 +1,8 @@
 const express = require('express');
 const router  = express.Router();
 
-const rateLimiter = require('../middlewares/rateLimiter');
+const rateLimiter               = require('../middlewares/rateLimiter');
+const refererCheckerForThankyou = require('../middlewares/refererCheckerForThankyou');
 
 const views = require('../controllers/views/views');
 
@@ -17,7 +18,7 @@ router.get('/shop/:product', views.shopSingleController);
 router.get('/about',         views.aboutController);
 router.get('/cart',          views.cartController);
 router.get('/checkout',      views.checkoutController);
-router.get('/thankyou',      views.thankyouController);
+router.get('/thankyou',      refererCheckerForThankyou, views.thankyouController);
 
 router.get('/404', views.controller404);
 router.get('/500', views.controller500);

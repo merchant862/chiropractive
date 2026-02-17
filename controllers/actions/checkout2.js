@@ -1,9 +1,11 @@
 // controllers/checkoutController.js
 const { v4: uuidv4 } = require('uuid');
-const cardValidator = require("../../utils/cardValidator");
-const { isValidUSState } = require("../../utils/stateCheckerForUS");
-const { isValidUSCity } = require("../../utils/cityCheckerForUS");
+const cardValidator                        = require("../../utils/cardValidator");
+const { isValidUSState }                   = require("../../utils/stateCheckerForUS");
+const { isValidUSCity }                    = require("../../utils/cityCheckerForUS");
 const { normalizeAddress, isValidAddress } = require("../../utils/addressNormalize");
+const sendOrderConfirmationEmail           = require("../../utils/sendOrderConfirmationEmail");
+const detectCardBrand                      = require("../../utils/detectCardBrand");
 
 const { addOrUpdateLeadSafe, findLeadByToken, destroyDuplicateLeads } = require("../../database/services/leads");
 
@@ -27,17 +29,17 @@ const checkout = async (req, res, next) => {
     }
 
     if (!/^\S+@\S+\.\S+$/.test(billing["Email"]))
-      return res.status(400).json({ error: { Billing: "Invalid email" } });
+      return res.status(400).json({ error: "Invalid billing email" });
     if (!/^\+1[0-9]{10}$/.test(billing["Phone"]))
-      return res.status(400).json({ error: { Billing: "Invalid phone number" } });
+      return res.status(400).json({ error: "Invalid billing phone number" });
     if (billing["Country"] !== "US")
-      return res.status(400).json({ error: { Billing: "We currently accept orders within the United States only" } });
+      return res.status(400).json({ error: "We currently accept orders within the United States only" });
     if (!isValidUSState(billing["State"]))
-      return res.status(400).json({ error: { Billing: "Invalid U.S. state selected" } });
+      return res.status(400).json({ error: "Invalid U.S. state selected for billing" });
     if (!isValidUSCity(billing["City"]))
-      return res.status(400).json({ error: { Billing: "Invalid city name" } });
+      return res.status(400).json({ error: "Invalid billing city name" });
     if (!isValidAddress(billing["Address"]))
-      return res.status(400).json({ error: { Billing: "Please enter a valid address" } });
+      return res.status(400).json({ error: "Please enter a valid billing address" });
 
     // ---------------- Shipping ----------------
     const shipDifferent = req.body.shipToDifferentAddress === "on" || req.body.shipToDifferentAddress === "true";
@@ -61,17 +63,17 @@ const checkout = async (req, res, next) => {
       }
 
       if (!/^\S+@\S+\.\S+$/.test(shipping["Email"]))
-        return res.status(400).json({ error: { Shipping: "Invalid email" } });
+        return res.status(400).json({ error: "Invalid billing email" });
       if (!/^\+1[0-9]{10}$/.test(shipping["Phone"]))
-        return res.status(400).json({ error: { Shipping: "Invalid phone number" } });
+        return res.status(400).json({ error: "Invalid billing phone number" });
       if (shipping["Country"] !== "US")
-        return res.status(400).json({ error: { Shipping: "We currently accept orders within the United States only" } });
+        return res.status(400).json({ error: "We currently accept orders within the United States only" });
       if (!isValidUSState(shipping["State"]))
-        return res.status(400).json({ error: { Shipping: "Invalid U.S. state selected" } });
+        return res.status(400).json({ error: "Invalid U.S. state selected for shipping" });
       if (!isValidUSCity(shipping["City"]))
-        return res.status(400).json({ error: { Shipping: "Invalid city name" } });
+        return res.status(400).json({ error: "Invalid shipping city name" });
       if (!isValidAddress(shipping["Address"]))
-        return res.status(400).json({ error: { Shipping: "Please enter a valid address" } });
+        return res.status(400).json({ error: "Please enter a valid shipping address" });
     }
 
     // ---------------- Card ----------------
@@ -86,7 +88,7 @@ const checkout = async (req, res, next) => {
 
     if (hasCard) {
       const cardValid = cardValidator(card);
-      if (!cardValid.valid) return res.status(400).json({ error: cardValid.errors });
+      if (!cardValid.valid) return res.status(400).json({ error: Object.values(cardValid.errors).join(", ") });
     }
 
     // ---------------- Lead Data ----------------
@@ -139,6 +141,22 @@ const checkout = async (req, res, next) => {
         success: hasCard ? "Checkout completed" : "Partial data saved",
         leadToken: savedLead.lead_token,
     });
+
+    let data = 
+    {
+        cartFromFrontEnd : req.body.cart,
+        email: billing["Email"],
+        cardBrand: detectCardBrand(req.body.cardNo),
+        cardLast4: (req.body.cardNo).slice(-4),
+        name: `${billing["First Name"]} ${billing["Last Name"]}`,
+        address1: `${billing["Address"]}`,
+        state: `${billing["State"]}`,
+        city: `${shipping["City"]}`,
+        zip: `${shipping["Postal Code"]}`,
+        country: 'USA',
+    }
+
+    await sendOrderConfirmationEmail(data);
   } catch (err) {
     next(err);
   }
